@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CheckCircle2 } from "lucide-react";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -62,20 +62,77 @@ const LoginPage = () => {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-prime-gray flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
-      {/* Back Button */}
-      <div className="absolute top-4 left-4 md:top-6 md:left-6 z-10">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => router.push("/")}
-          className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Kembali
-        </Button>
+    <div className="grid min-h-screen lg:grid-cols-2">
+      {/* Left Side - Branding */}
+      <div className="hidden lg:flex flex-col justify-between p-12 bg-[#0F0F0F] text-white">
+        <div>
+          <div className="flex items-center gap-2 mb-16">
+            <img src="/logo.png" alt="Prime Property Logo" className="h-12 w-auto" />
+          </div>
+          
+          <div className="inline-flex items-center rounded-full border border-[#C9A961]/30 bg-[#C9A961]/10 px-2.5 py-0.5 text-xs font-semibold text-[#C9A961] transition-colors mb-6">
+            <div className="mr-1 h-1.5 w-1.5 rounded-full bg-[#C9A961]" />
+            Portal Agent Khusus
+          </div>
+
+          <h1 className="text-4xl font-bold tracking-tight mb-2">Portal Agent</h1>
+          <h2 className="text-4xl font-bold tracking-tight text-[#C9A961] mb-6">Prime Property</h2>
+          
+          <p className="text-gray-400 text-lg max-w-md leading-relaxed mb-12">
+            Akses katalog properti real-time, kelola listing secara cerdas, dan monitor performa bisnis Anda dalam satu dashboard terintegrasi.
+          </p>
+
+          <div className="space-y-4">
+            {[
+              "Katalog properti real-time mendalam",
+              "Manajemen listing instan & akurat",
+              "Sistem filter & pencarian AI-Ready",
+              "Laporan data transparan & tervalidasi"
+            ].map((feature, i) => (
+              <div key={i} className="flex items-center gap-3 text-gray-300">
+                <CheckCircle2 className="h-5 w-5 text-[#C9A961]" />
+                <span>{feature}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-6 pt-12 border-t border-white/10 max-w-md">
+          <div>
+            <div className="text-2xl font-bold">500+</div>
+            <div className="text-[10px] uppercase tracking-wider text-gray-500 mt-1">Listing Aktif</div>
+          </div>
+          <div>
+            <div className="text-2xl font-bold">24/7</div>
+            <div className="text-[10px] uppercase tracking-wider text-gray-500 mt-1">Akses Data</div>
+          </div>
+          <div>
+            <div className="text-2xl font-bold">100%</div>
+            <div className="text-[10px] uppercase tracking-wider text-gray-500 mt-1">Transparan</div>
+          </div>
+        </div>
+
+        <div className="text-xs text-gray-600 mt-12">
+          &copy; 2024 Prime Property. Internal Use Only.
+        </div>
       </div>
-      <LoginForm defaultCallbackUrl="/agent/dashboard" />
+
+      {/* Right Side - Form */}
+      <div className="relative flex flex-col justify-center items-center p-6 md:p-12">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="/bglogin.webp" 
+            alt="Prime Property Background" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
+        </div>
+        
+        <div className="relative z-10 w-full max-w-md">
+          <LoginForm defaultCallbackUrl="/agent/dashboard" />
+        </div>
+      </div>
     </div>
   );
 };

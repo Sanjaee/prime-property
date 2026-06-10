@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import Link from "next/link";
 import { toast } from "@/hooks/use-toast";
 import { Eye, EyeOff } from "lucide-react";
 import { loginSchema, getFirstZodError, scrollToInvalidField } from "@/lib/schemas";
@@ -79,12 +80,12 @@ export const LoginForm = ({ defaultCallbackUrl = "/" }: { defaultCallbackUrl?: s
 
         if (result?.error) {
           const errorStr = typeof result.error === 'string' ? result.error : JSON.stringify(result.error);
-          
+
 
 
           // Check for other specific error messages
-          if (errorStr.includes("registered with Google") || 
-              errorStr.includes("Please sign in with Google")) {
+          if (errorStr.includes("registered with Google") ||
+            errorStr.includes("Please sign in with Google")) {
             errorMessage = "Email ini sudah terdaftar dengan Google. Silakan gunakan tombol 'Masuk dengan Google' untuk login.";
             errorTitle = "⚠️ Tipe Akun Tidak Cocok";
           } else if (errorStr.includes("User not found")) {
@@ -131,8 +132,8 @@ export const LoginForm = ({ defaultCallbackUrl = "/" }: { defaultCallbackUrl?: s
         const errorStr = typeof result.error === 'string' ? result.error : JSON.stringify(result.error);
 
         // Check for specific error messages
-        if (errorStr.includes("already registered with password") || 
-            errorStr === "AccessDenied") {
+        if (errorStr.includes("already registered with password") ||
+          errorStr === "AccessDenied") {
           errorMessage = "Email ini sudah terdaftar dengan password. Silakan login dengan email dan password.";
           errorTitle = "⚠️ Email Sudah Terdaftar";
         } else if (errorStr.includes("different Google account")) {
@@ -157,9 +158,9 @@ export const LoginForm = ({ defaultCallbackUrl = "/" }: { defaultCallbackUrl?: s
       }
     } catch (error) {
       console.error("Google sign-in error:", error);
-      
+
       let errorMessage = "Terjadi kesalahan saat autentikasi Google. Silakan coba lagi.";
-      
+
       // Handle error object
       if (error instanceof Error && error.message) {
         errorMessage = error.message;
@@ -169,7 +170,7 @@ export const LoginForm = ({ defaultCallbackUrl = "/" }: { defaultCallbackUrl?: s
           errorMessage = errorObj.message;
         }
       }
-      
+
       toast({
         title: "❌ Google Sign-In Gagal",
         description: errorMessage,
@@ -182,43 +183,44 @@ export const LoginForm = ({ defaultCallbackUrl = "/" }: { defaultCallbackUrl?: s
 
   return (
     <Card className="w-full max-w-md mx-auto dark:bg-gray-800 dark:border-gray-700">
-      <CardHeader className="text-center">
-        <CardTitle className="text-3xl font-bold text-gray-900 dark:text-gray-50">
-          Zacode
+      <CardHeader className="text-center pb-8">
+        <CardTitle className="text-2xl font-bold text-gray-900 mb-2">
+          Selamat Datang
         </CardTitle>
-        <CardDescription className="text-gray-600 dark:text-gray-400">
-          Masuk ke akun Anda
+        <CardDescription className="text-sm text-gray-500 leading-relaxed">
+          Silakan masuk untuk mengakses manajemen dashboard agen Anda.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col gap-6">
-            <div className="grid gap-3">
-              <Label htmlFor="email">Email</Label>
+            <div className="grid gap-2">
+              <Label htmlFor="email" className="text-xs font-semibold text-gray-700">Alamat Email</Label>
               <Input
                 id="email"
                 name="email"
                 type="email"
-                placeholder="Masukkan email"
+                placeholder="name@primeproperty.id"
                 value={formData.email}
                 onChange={handleInputChange}
                 required
                 disabled={loading}
+                className="bg-gray-50 border-gray-200"
               />
             </div>
-            <div className="grid gap-3">
-              <Label htmlFor="password">Password</Label>
+            <div className="grid gap-2">
+              <Label htmlFor="password" className="text-xs font-semibold text-gray-700">Password</Label>
               <div className="relative">
                 <Input
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Masukkan password"
+                  placeholder="••••••••"
                   value={formData.password}
                   onChange={handleInputChange}
                   required
                   disabled={loading}
-                  className="pr-10"
+                  className="pr-10 bg-gray-50 border-gray-200"
                 />
                 <button
                   type="button"
@@ -234,13 +236,28 @@ export const LoginForm = ({ defaultCallbackUrl = "/" }: { defaultCallbackUrl?: s
               </div>
             </div>
 
-            <div className="flex flex-col gap-3">
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Masuk..." : "Masuk"}
+            <div className="flex flex-col gap-4 mt-2">
+              <Button type="submit" className="w-full h-11 text-base font-semibold" disabled={loading}>
+                {loading ? "Masuk..." : "Masuk ke Dashboard"}
               </Button>
             </div>
           </div>
         </form>
+
+        <div className="mt-8 relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-gray-200" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-white px-2 text-gray-400 font-medium">Atau</span>
+          </div>
+        </div>
+
+        <div className="mt-6 text-center">
+          <Link href="/" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+            ← Kembali ke situs publik
+          </Link>
+        </div>
 
 
 
