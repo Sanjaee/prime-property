@@ -171,7 +171,7 @@ export function PropertiTable({
       cell: ({ row }) => {
         const isSoldOut = row.original.listingStatus === "sold_out";
         return (
-          <Badge variant={isSoldOut ? "destructive" : "default"} className={!isSoldOut ? "bg-green-600 hover:bg-green-700" : ""}>
+          <Badge className={isSoldOut ? "bg-[#B33A3A] hover:bg-[#B33A3A]/90 text-white" : "bg-green-100 hover:bg-green-200 text-green-800 font-medium"}>
             {isSoldOut ? "Sold Out" : "In Stock"}
           </Badge>
         )
@@ -181,13 +181,13 @@ export function PropertiTable({
       accessorKey: "siap",
       header: "Kesiapan",
       cell: ({ row }) => {
-        let color = "bg-muted text-muted-foreground";
-        if (row.original.siap === "siap_huni") color = "bg-yellow-500 text-white";
-        else if (row.original.siap === "siap_kosong") color = "bg-purple-400 text-white";
-        else if (row.original.siap === "siap_huni_renovasi") color = "bg-blue-500 text-white";
+        let color = "bg-[#F5F5F5] text-[#1A1A1A] border-[#E5E1DA]";
+        if (row.original.siap === "siap_huni") color = "bg-[#C9A961] text-[#1A1A1A] border-transparent font-medium";
+        else if (row.original.siap === "siap_kosong") color = "bg-purple-100 hover:bg-purple-200 text-purple-800 border-transparent font-medium";
+        else if (row.original.siap === "siap_huni_renovasi") color = "bg-[#1A1A1A] text-[#C9A961] border-transparent font-medium";
         
         return (
-          <Badge className={color} variant="outline">
+          <Badge className={color}>
             {row.original.siap.replace(/_/g, " ")}
           </Badge>
         )
@@ -323,9 +323,9 @@ export function PropertiTable({
       </div>
 
       <div className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6">
-        <div className="overflow-hidden rounded-lg border">
+        <div className="overflow-hidden rounded-lg border bg-card">
           <Table>
-            <TableHeader className="sticky top-0 z-10 bg-muted">
+            <TableHeader className="sticky top-0 z-10 bg-muted text-foreground">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {

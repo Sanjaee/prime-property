@@ -132,9 +132,9 @@ export function UsersTable({ data, onRefresh }: UsersTableProps) {
         />
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-md border bg-card">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted text-foreground">
             <TableRow>
               <TableHead>Nama Lengkap</TableHead>
               <TableHead>Email</TableHead>

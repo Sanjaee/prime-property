@@ -115,7 +115,7 @@ export function PropertiForm({ initialData, onSave, onCancel }: PropertiFormProp
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
-      <div className="xl:col-span-2 bg-background rounded-lg border shadow-sm">
+      <div className="xl:col-span-2 bg-card rounded-lg border shadow-sm">
         <div className="px-6 py-4 border-b">
           <h2 className="text-xl font-semibold">{isEditing ? "Edit Properti" : "Tambah Properti"}</h2>
           <p className="text-sm text-muted-foreground">
@@ -258,7 +258,7 @@ export function PropertiForm({ initialData, onSave, onCancel }: PropertiFormProp
                     control={form.control}
                     name="hasCarport"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-md border p-3 shadow-sm md:mt-[30px] h-[40px] bg-background">
+                      <FormItem className="flex flex-row items-center justify-between rounded-md border p-3 shadow-sm md:mt-[30px] h-[40px] bg-white">
                         <FormLabel className="text-sm font-medium cursor-pointer">Carport</FormLabel>
                         <FormControl>
                           <Switch checked={field.value} onCheckedChange={field.onChange} />

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { db } from "@/db";
 import { properti, properti_images, detail_properti } from "@/db/schema";
-import { desc, eq, inArray, and } from "drizzle-orm";
+import { desc, eq, inArray, and, isNull } from "drizzle-orm";
 import type { InferSelectModel } from "drizzle-orm";
 import { motion } from "framer-motion";
 import { MapPin, Phone, MessageCircle, Mail, Maximize2, Minimize2 } from "lucide-react";
@@ -418,7 +418,7 @@ export async function getServerSideProps() {
     const data = await db.query.properti.findMany({
       limit: 6,
       orderBy: [desc(properti.createdAt)],
-      where: eq(properti.status, "active"),
+      where: and(eq(properti.status, "active"), isNull(properti.deletedAt)),
     });
 
     const ids = data.map((p) => p.id);

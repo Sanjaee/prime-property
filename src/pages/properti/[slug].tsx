@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import { db } from "@/db";
 import { properti, properti_images, detail_properti, users } from "@/db/schema";
-import { eq, asc } from "drizzle-orm";
+import { eq, asc, isNull, and } from "drizzle-orm";
 import Navbar from "@/components/general/Navbar";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Button } from "@/components/ui/button";
@@ -179,7 +179,7 @@ export default function PropertiDetailPage({ data }: { data: PageData | null }) 
   if (!data) {
     return (
       <div
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-white`}
       >
         <Navbar />
         <div className="container max-w-2xl mx-auto px-4 py-20 text-center">
@@ -227,12 +227,12 @@ export default function PropertiDetailPage({ data }: { data: PageData | null }) 
 
   return (
     <div
-      className={`${geistSans.variable} ${geistMono.variable} min-h-screen flex flex-col bg-background`}
+      className={`${geistSans.variable} ${geistMono.variable} min-h-screen flex flex-col bg-white`}
     >
       <Navbar />
       <main className="flex-1">
         {/* Top bar */}
-        <div className="sticky top-16 z-40 bg-background/95 backdrop-blur border-b px-4 py-3 flex items-center justify-between">
+        <div className="sticky top-16 z-40 bg-white/95 backdrop-blur border-b px-4 py-3 flex items-center justify-between">
           <Button variant="ghost" size="sm" onClick={() => router.push("/")}>
             <ArrowLeft className="size-4 mr-2" />
             Kembali
@@ -734,7 +734,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const [row] = await db
     .select()
     .from(properti)
-    .where(eq(properti.slug, slug))
+    .where(and(eq(properti.slug, slug), isNull(properti.deletedAt)))
     .limit(1);
 
   if (!row) return { props: { data: null } };

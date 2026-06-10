@@ -156,6 +156,34 @@ export function ArsipTable({
       ),
     },
     {
+      accessorKey: "listingStatus",
+      header: "Status",
+      cell: ({ row }) => {
+        const isSoldOut = row.original.listingStatus === "sold_out";
+        return (
+          <Badge className={isSoldOut ? "bg-[#B33A3A] hover:bg-[#B33A3A]/90 text-white" : "bg-green-100 hover:bg-green-200 text-green-800 font-medium"}>
+            {isSoldOut ? "Sold Out" : "In Stock"}
+          </Badge>
+        )
+      },
+    },
+    {
+      accessorKey: "siap",
+      header: "Kesiapan",
+      cell: ({ row }) => {
+        let color = "bg-[#F5F5F5] text-[#1A1A1A] border-[#E5E1DA]";
+        if (row.original.siap === "siap_huni") color = "bg-[#C9A961] text-[#1A1A1A] border-transparent font-medium";
+        else if (row.original.siap === "siap_kosong") color = "bg-purple-100 hover:bg-purple-200 text-purple-800 border-transparent font-medium";
+        else if (row.original.siap === "siap_huni_renovasi") color = "bg-[#1A1A1A] text-[#C9A961] border-transparent font-medium";
+        
+        return (
+          <Badge className={color}>
+            {row.original.siap.replace(/_/g, " ")}
+          </Badge>
+        )
+      },
+    },
+    {
       accessorKey: "price",
       header: "Harga",
       cell: ({ row }) => <div>{formatRupiah(row.original.price)}</div>,
@@ -275,9 +303,9 @@ export function ArsipTable({
       </div>
 
       <div className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6">
-        <div className="overflow-hidden rounded-lg border">
+        <div className="overflow-hidden rounded-lg border bg-card">
           <Table>
-            <TableHeader className="sticky top-0 z-10 bg-muted">
+            <TableHeader className="sticky top-0 z-10 bg-muted text-foreground">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {

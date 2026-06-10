@@ -86,9 +86,9 @@ export function AuditTable({ data }: AuditTableProps) {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-md border">
+      <div className="rounded-md border bg-card">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted text-foreground">
             <TableRow>
               <TableHead>Waktu</TableHead>
               <TableHead>Pengguna</TableHead>
@@ -149,7 +149,7 @@ export function AuditTable({ data }: AuditTableProps) {
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <span className="text-muted-foreground block mb-1">ID Data:</span>
-                  <code className="bg-muted px-1.5 py-0.5 rounded text-xs">{selectedLog.recordId}</code>
+                  <code className="bg-[#1A1A1A] text-white px-1.5 py-0.5 rounded text-xs">{selectedLog.recordId}</code>
                 </div>
                 <div>
                   <span className="text-muted-foreground block mb-1">IP Address:</span>
