@@ -1,5 +1,7 @@
 "use client"
 
+import { useSession, signOut } from "next-auth/react"
+
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
@@ -20,13 +22,14 @@ import {
 import {
   IconLogout,
 } from "@tabler/icons-react"
-import { signOut } from "next-auth/react"
 
 export function SiteHeader() {
+  const { data: session } = useSession()
+  
   const user = {
-    name: "Admin",
-    email: "admin@prime.id",
-    avatar: "https://github.com/shadcn.png",
+    name: session?.user?.name || "Admin",
+    email: session?.user?.email || "admin@prime.id",
+    avatar: "https://github.com/shadcn.png", // Kita biarkan dummy avatar karena belum ada fitur upload foto profil
   }
 
   return (

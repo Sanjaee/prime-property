@@ -9,6 +9,7 @@ import { toast } from "sonner"
 import { AppSidebar } from "@/components/dashboard/app-sidebar"
 import { SiteHeader } from "@/components/dashboard/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { IconLoader } from "@tabler/icons-react"
 
 import { PropertiTable } from "@/components/dashboard/properti-table"
 
@@ -77,7 +78,9 @@ export default function PropertiPage({ userRole }: PropertiPageProps) {
           <SiteHeader />
           <div className="flex flex-1 flex-col gap-4 p-4 lg:p-6">
             {loading ? (
-              <div className="flex items-center justify-center h-48">Loading...</div>
+              <div className="flex items-center justify-center h-64">
+                <IconLoader className="h-8 w-8 animate-spin text-muted-foreground" />
+              </div>
             ) : (
               <PropertiTable
                 data={data}

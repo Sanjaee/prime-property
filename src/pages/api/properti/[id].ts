@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { db } from "@/db";
-import { properti, properti_images, detail_properti, properti_hadap } from "@/db/schema";
+import { properti, properti_images, detail_properti, properti_hadap, audit_logs } from "@/db/schema";
 import { eq, asc } from "drizzle-orm";
 import { authOptions } from "../auth/[...nextauth]";
 import { propertiSchema } from "@/lib/validations/properti";
@@ -83,6 +83,25 @@ export default async function handler(
 
       const validatedData = propertiSchema.parse(req.body);
 
+      // Pre-fetch old data for audit log
+      const [existingDetail] = await db.select().from(detail_properti).where(eq(detail_properti.propertiId, id));
+      const existingHadapRows = await db.select().from(properti_hadap).where(eq(properti_hadap.propertiId, id));
+      let existingKawasan = [];
+      try { existingKawasan = existing.kawasan ? JSON.parse(existing.kawasan) : []; } catch(e) {}
+      
+      const oldData = {
+        ...existing,
+        hasCarport: existingDetail?.hasCarport ?? false,
+        hadap: existingHadapRows.map(h => h.hadap),
+        kawasan: existingKawasan,
+      };
+
+      const changedFields = Object.keys(validatedData).filter(key => {
+        const oldVal = (oldData as any)[key];
+        const newVal = (validatedData as any)[key];
+        return JSON.stringify(oldVal) !== JSON.stringify(newVal);
+      });
+
       const [updated] = await db
         .update(properti)
         .set({
@@ -115,7 +134,6 @@ export default async function handler(
         .returning();
 
       // Update Carport
-      const [existingDetail] = await db.select().from(detail_properti).where(eq(detail_properti.propertiId, id));
       if (existingDetail) {
         await db.update(detail_properti).set({ hasCarport: validatedData.hasCarport }).where(eq(detail_properti.propertiId, id));
       } else {
@@ -152,6 +170,22 @@ export default async function handler(
         }
       }
 
+      // Record Audit Log
+      const ipAddress = Array.isArray(req.headers["x-forwarded-for"]) 
+        ? req.headers["x-forwarded-for"][0] 
+        : req.headers["x-forwarded-for"] || req.socket.remoteAddress || null;
+        
+      await db.insert(audit_logs).values({
+        userId: session.user.id,
+        tableName: "properti",
+        recordId: id,
+        action: "update",
+        oldData: JSON.stringify(oldData, (key, value) => typeof value === 'bigint' ? value.toString() : value),
+        newData: JSON.stringify(validatedData, (key, value) => typeof value === 'bigint' ? value.toString() : value),
+        changedFields: JSON.stringify(changedFields),
+        ipAddress: ipAddress as string | null,
+      });
+
       const safeData = JSON.parse(JSON.stringify(updated, (key, value) => typeof value === 'bigint' ? value.toString() : value));
       return res.status(200).json(safeData);
     } catch (error: any) {
@@ -179,6 +213,21 @@ export default async function handler(
 
       // Soft delete
       await db.update(properti).set({ deletedAt: new Date() }).where(eq(properti.id, id));
+
+      // Record Audit Log
+      const ipAddress = Array.isArray(req.headers["x-forwarded-for"]) 
+        ? req.headers["x-forwarded-for"][0] 
+        : req.headers["x-forwarded-for"] || req.socket.remoteAddress || null;
+        
+      await db.insert(audit_logs).values({
+        userId: session.user.id,
+        tableName: "properti",
+        recordId: id,
+        action: "delete",
+        oldData: JSON.stringify(existing, (key, value) => typeof value === 'bigint' ? value.toString() : value),
+        ipAddress: ipAddress as string | null,
+      });
+
       return res.status(200).json({ message: "Properti berhasil dihapus" });
     } catch (error) {
       console.error("DELETE properti error:", error);

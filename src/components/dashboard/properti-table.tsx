@@ -271,47 +271,52 @@ export function PropertiTable({
     <div className="w-full flex-col justify-start gap-6 space-y-4">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 lg:px-6 gap-4">
         <h2 className="text-2xl font-bold tracking-tight">Listing Properti</h2>
+      </div>
+
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 lg:px-6 gap-4">
+        <Input
+          placeholder="Cari nama properti..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("name")?.setFilterValue(event.target.value)
+          }
+          className="w-full sm:max-w-sm h-9"
+        />
         
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Input
-            placeholder="Cari nama properti..."
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("name")?.setFilterValue(event.target.value)
-            }
-            className="h-9 w-full sm:w-[250px]"
-          />
+        <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
-                <IconLayoutColumns />
-                <span className="hidden lg:inline">Columns</span>
-                <IconChevronDown />
+                Columns <IconChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent align="end">
               {table
                 .getAllColumns()
-                .filter((column) => typeof column.accessorFn !== "undefined" && column.getCanHide())
+                .filter((column) => column.getCanHide())
                 .map((column) => {
                   return (
-                    <DropdownMenuCheckboxItem
+                    <DropdownMenuItem
                       key={column.id}
                       className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        column.toggleVisibility(!column.getIsVisible())
+                      }}
                     >
+                      <Checkbox
+                        checked={column.getIsVisible()}
+                        className="mr-2"
+                      />
                       {column.id}
-                    </DropdownMenuCheckboxItem>
+                    </DropdownMenuItem>
                   )
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-
           {userRole === "superadmin" && (
-            <Button size="sm" onClick={onAdd}>
-              <IconPlus />
-              <span className="hidden lg:inline">Tambah Properti</span>
+            <Button size="sm" onClick={onAdd} className="bg-amber-600 hover:bg-amber-700 text-white">
+              <IconPlus className="mr-2 h-4 w-4" /> Tambah Properti
             </Button>
           )}
         </div>

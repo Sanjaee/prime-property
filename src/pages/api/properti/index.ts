@@ -7,6 +7,7 @@ import {
   detail_properti,
   properti_hadap,
   users,
+  audit_logs,
 } from "@/db/schema";
 import { eq, desc, inArray, and, isNull } from "drizzle-orm";
 import { authOptions } from "../auth/[...nextauth]";
@@ -192,6 +193,20 @@ export default async function handler(
           sortOrder: i,
         });
       }
+
+      // Record Audit Log
+      const ipAddress = Array.isArray(req.headers["x-forwarded-for"]) 
+        ? req.headers["x-forwarded-for"][0] 
+        : req.headers["x-forwarded-for"] || req.socket.remoteAddress || null;
+        
+      await db.insert(audit_logs).values({
+        userId: session.user.id,
+        tableName: "properti",
+        recordId: inserted.id,
+        action: "create",
+        newData: JSON.stringify(validatedData, (key, value) => typeof value === 'bigint' ? value.toString() : value),
+        ipAddress: ipAddress as string | null,
+      });
 
       return res.status(201).json({
         ...inserted,
