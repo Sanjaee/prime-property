@@ -1,41 +1,45 @@
 import type { GetServerSideProps } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import Navbar from "@/components/general/Navbar";
-import { PropertiListUser } from "@/components/properti/PropertiListUser";
-import { PropertiTambahForm } from "@/components/properti/PropertiTambahForm";
-import { Geist, Geist_Mono } from "next/font/google";
+import { AppSidebar } from "@/components/dashboard/app-sidebar"
+import { ChartAreaInteractive } from "@/components/dashboard/chart-area-interactive"
+import { DataTable } from "@/components/dashboard/data-table"
+import { SectionCards } from "@/components/dashboard/section-cards"
+import { SiteHeader } from "@/components/dashboard/site-header"
+import {
+  SidebarInset,
+  SidebarProvider,
+} from "@/components/ui/sidebar"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import data from "./data.json"
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export default function TambahPropertiPage() {
+export default function AgentDashboard() {
   return (
-    <div
-      className={`${geistSans.className} ${geistMono.className} min-h-screen flex flex-col bg-background`}
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 72)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        } as React.CSSProperties
+      }
     >
-      <Navbar />
-      <main className="flex-1 container max-w-2xl mx-auto px-4 py-20">
-        <div className="space-y-6">
-          <PropertiListUser />
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Tambah Properti</h1>
-            <p className="text-muted-foreground mt-1">
-              Lengkapi form untuk mempublikasikan properti di peta.
-            </p>
+      <AppSidebar variant="inset" />
+      <SidebarInset>
+        <SiteHeader />
+        <div className="flex flex-1 flex-col">
+          <div className="@container/main flex flex-1 flex-col gap-2">
+            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+              <SectionCards />
+              <div className="px-4 lg:px-6">
+                <ChartAreaInteractive />
+              </div>
+              <DataTable data={data as any} />
+            </div>
           </div>
-          <PropertiTambahForm />
         </div>
-      </main>
-    </div>
-  );
+      </SidebarInset>
+    </SidebarProvider>
+  )
 }
 
 export async function getServerSideProps(context: Parameters<GetServerSideProps>[0]) {

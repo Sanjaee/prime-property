@@ -3,6 +3,7 @@ import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/toaster";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { ApiProvider } from "@/components/contex/ApiProvider";
 import { MapUIProvider } from "@/components/contex/MapUIContext";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -46,14 +47,16 @@ export default function App({
         <SessionProvider session={session}>
           <ApiProvider>
             <MapUIProvider>
-              <LoadingBar
-                color="#D4AF37" // prime-gold
-                height={3}
-                progress={progress}
-                onLoaderFinished={() => setProgress(0)}
-              />
-              <Component {...pageProps} />
-              <Toaster />
+              <TooltipProvider>
+                <LoadingBar
+                  color="#D4AF37" // prime-gold
+                  height={3}
+                  progress={progress}
+                  onLoaderFinished={() => setProgress(0)}
+                />
+                <Component {...pageProps} />
+                <Toaster />
+              </TooltipProvider>
             </MapUIProvider>
           </ApiProvider>
         </SessionProvider>
