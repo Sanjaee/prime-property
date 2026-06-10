@@ -33,6 +33,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Input } from "@/components/ui/input"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -268,10 +269,18 @@ export function PropertiTable({
 
   return (
     <div className="w-full flex-col justify-start gap-6 space-y-4">
-      <div className="flex items-center justify-between px-4 lg:px-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 lg:px-6 gap-4">
         <h2 className="text-2xl font-bold tracking-tight">Listing Properti</h2>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Input
+            placeholder="Cari nama properti..."
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("name")?.setFilterValue(event.target.value)
+            }
+            className="h-9 w-full sm:w-[250px]"
+          />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">

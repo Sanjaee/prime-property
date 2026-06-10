@@ -94,7 +94,6 @@ export function PropertiEditForm({ editId }: { editId: string }) {
           latitude: String(data.latitude ?? ""),
           longitude: String(data.longitude ?? ""),
         });
-        });
       })
       .catch((err) => {
         toast({

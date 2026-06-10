@@ -63,7 +63,7 @@ export function PropertiForm({ initialData, onSave, onCancel }: PropertiFormProp
   const isEditing = !!initialData
 
   const form = useForm<PropertiFormValues>({
-    resolver: zodResolver(propertiSchema),
+    resolver: zodResolver(propertiSchema) as any,
     defaultValues: {
       name: "",
       group: "",
@@ -87,12 +87,13 @@ export function PropertiForm({ initialData, onSave, onCancel }: PropertiFormProp
       district: "",
       latitude: 0,
       longitude: 0,
+      postalCode: "",
       listingType: "sale",
     },
   })
 
   // Watch all values for real-time preview
-  const prop = form.watch()
+  const prop = useWatch({ control: form.control }) || form.getValues()
 
   React.useEffect(() => {
     if (initialData) {
