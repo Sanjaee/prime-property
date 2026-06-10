@@ -1,9 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { db } from "@/db";
-import { properti, properti_images } from "@/db/schema";
-import { eq, and, asc } from "drizzle-orm";
+import { properti, properti_images, detail_properti, properti_hadap } from "@/db/schema";
+import { eq, asc } from "drizzle-orm";
 import { authOptions } from "../auth/[...nextauth]";
+import { propertiSchema } from "@/lib/validations/properti";
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,10 +26,7 @@ export default async function handler(
         .where(eq(properti.id, id))
         .limit(1);
 
-      if (!row) return res.status(404).json({ error: "Properti tidak ditemukan" });
-      if (row.ownerId !== session.user.id) {
-        return res.status(403).json({ error: "Akses ditolak" });
-      }
+      if (!row || row.deletedAt) return res.status(404).json({ error: "Properti tidak ditemukan" });
 
       const allImages = await db
         .select({ imageUrl: properti_images.imageUrl })
@@ -39,13 +37,30 @@ export default async function handler(
       const imageUrls = allImages.map((i) => i.imageUrl);
       const imageUrl = imageUrls[0] ?? null;
 
-      return res.status(200).json({
+      // fetch detail carport
+      const [detail] = await db.select().from(detail_properti).where(eq(detail_properti.propertiId, id)).limit(1);
+      
+      // fetch hadap
+      const hadapRows = await db.select().from(properti_hadap).where(eq(properti_hadap.propertiId, id));
+      const hadap = hadapRows.map(h => h.hadap);
+
+      let kawasanArr: string[] = [];
+      try { kawasanArr = row.kawasan ? JSON.parse(row.kawasan) : []; } catch(e) {}
+
+      const data = {
         ...row,
         latitude: Number(row.latitude),
         longitude: Number(row.longitude),
         imageUrl,
         imageUrls,
-      });
+        hasCarport: detail?.hasCarport ?? false,
+        hadap,
+        kawasan: kawasanArr,
+        price: Number(row.priceRupiah || row.price),
+      };
+      
+      const safeData = JSON.parse(JSON.stringify(data, (key, value) => typeof value === 'bigint' ? value.toString() : value));
+      return res.status(200).json(safeData);
     } catch (error) {
       console.error("GET properti error:", error);
       return res.status(500).json({ error: "Gagal mengambil data" });
@@ -53,6 +68,10 @@ export default async function handler(
   }
 
   if (req.method === "PATCH") {
+    if (session.user.role !== "superadmin") {
+      return res.status(403).json({ error: "Akses ditolak. Hanya Superadmin yang dapat mengubah properti." });
+    }
+
     try {
       const [existing] = await db
         .select()
@@ -60,66 +79,67 @@ export default async function handler(
         .where(eq(properti.id, id))
         .limit(1);
 
-      if (!existing) return res.status(404).json({ error: "Properti tidak ditemukan" });
-      if (existing.ownerId !== session.user.id) {
-        return res.status(403).json({ error: "Akses ditolak" });
-      }
+      if (!existing || existing.deletedAt) return res.status(404).json({ error: "Properti tidak ditemukan" });
 
-      const body = req.body;
-      const updates: Record<string, unknown> = {
-        updatedAt: new Date(),
-      };
-
-      const fields = [
-        "name", "description", "type", "listingType", "price", "priceUnit",
-        "rentPeriod", "address", "province", "city", "district", "postalCode",
-        "latitude", "longitude",
-      ] as const;
-
-      if (body.latitude !== undefined) {
-        const lat = parseFloat(String(body.latitude));
-        if (Number.isNaN(lat) || lat < -90 || lat > 90) {
-          return res.status(400).json({
-            error: "Latitude tidak valid. Gunakan angka -90 sampai 90.",
-          });
-        }
-        updates.latitude = String(lat);
-      }
-      if (body.longitude !== undefined) {
-        const lng = parseFloat(String(body.longitude));
-        if (Number.isNaN(lng) || lng < -180 || lng > 180) {
-          return res.status(400).json({
-            error: "Longitude tidak valid. Gunakan angka -180 sampai 180.",
-          });
-        }
-        updates.longitude = String(lng);
-      }
-
-      for (const f of fields) {
-        if (body[f] !== undefined) {
-          if (f === "price") {
-            updates[f] = String(body[f]);
-          } else if (f === "latitude" || f === "longitude") {
-            // Already handled above
-          } else if (f === "rentPeriod" && body.listingType !== "rent") {
-            updates[f] = null;
-          } else {
-            updates[f] = body[f];
-          }
-        }
-      }
+      const validatedData = propertiSchema.parse(req.body);
 
       const [updated] = await db
         .update(properti)
-        .set(updates as Record<string, unknown>)
+        .set({
+          name: validatedData.name,
+          description: validatedData.description,
+          type: validatedData.type,
+          listingType: validatedData.listingType,
+          price: String(validatedData.priceRupiah),
+          priceRupiah: BigInt(validatedData.priceRupiah),
+          priceUnit: validatedData.priceUnit,
+          address: validatedData.address,
+          province: validatedData.province,
+          city: validatedData.city,
+          district: validatedData.district,
+          postalCode: validatedData.postalCode ?? null,
+          latitude: String(validatedData.latitude),
+          longitude: String(validatedData.longitude),
+          group: validatedData.group ?? null,
+          lebar: String(validatedData.lebar),
+          panjang: String(validatedData.panjang),
+          tingkat: String(validatedData.tingkat),
+          listingStatus: validatedData.listingStatus,
+          siap: validatedData.siap,
+          mapsLink: validatedData.mapsLink ?? null,
+          kawasan: JSON.stringify(validatedData.kawasan),
+          unit: validatedData.unit ?? null,
+          updatedAt: new Date(),
+        })
         .where(eq(properti.id, id))
         .returning();
 
-      if (body.imageUrls !== undefined) {
-        const imageUrls = Array.isArray(body.imageUrls)
-          ? body.imageUrls.filter((u: unknown) => typeof u === "string")
-          : body.imageUrl
-            ? [body.imageUrl]
+      // Update Carport
+      const [existingDetail] = await db.select().from(detail_properti).where(eq(detail_properti.propertiId, id));
+      if (existingDetail) {
+        await db.update(detail_properti).set({ hasCarport: validatedData.hasCarport }).where(eq(detail_properti.propertiId, id));
+      } else {
+        await db.insert(detail_properti).values({ propertiId: id, hasCarport: validatedData.hasCarport });
+      }
+
+      // Update Hadap
+      await db.delete(properti_hadap).where(eq(properti_hadap.propertiId, id));
+      if (validatedData.hadap.length > 0) {
+        for (const h of validatedData.hadap) {
+          await db.insert(properti_hadap).values({
+            propertiId: id,
+            hadap: h as any,
+          });
+        }
+      }
+
+      // Handle ImageUrls
+      if (req.body.imageUrls !== undefined) {
+        const bodyImages = req.body.imageUrls || req.body.imageUrl;
+        const imageUrls = Array.isArray(bodyImages)
+          ? bodyImages.filter((u: unknown) => typeof u === "string")
+          : typeof bodyImages === "string"
+            ? [bodyImages]
             : [];
         await db.delete(properti_images).where(eq(properti_images.propertiId, id));
         for (let i = 0; i < imageUrls.length; i++) {
@@ -132,14 +152,22 @@ export default async function handler(
         }
       }
 
-      return res.status(200).json(updated);
-    } catch (error) {
+      const safeData = JSON.parse(JSON.stringify(updated, (key, value) => typeof value === 'bigint' ? value.toString() : value));
+      return res.status(200).json(safeData);
+    } catch (error: any) {
       console.error("PATCH properti error:", error);
+      if (error.name === "ZodError") {
+        return res.status(400).json({ error: error.errors });
+      }
       return res.status(500).json({ error: "Gagal mengubah properti" });
     }
   }
 
   if (req.method === "DELETE") {
+    if (session.user.role !== "superadmin") {
+      return res.status(403).json({ error: "Akses ditolak. Hanya Superadmin yang dapat menghapus properti." });
+    }
+
     try {
       const [existing] = await db
         .select()
@@ -147,12 +175,10 @@ export default async function handler(
         .where(eq(properti.id, id))
         .limit(1);
 
-      if (!existing) return res.status(404).json({ error: "Properti tidak ditemukan" });
-      if (existing.ownerId !== session.user.id) {
-        return res.status(403).json({ error: "Akses ditolak" });
-      }
+      if (!existing || existing.deletedAt) return res.status(404).json({ error: "Properti tidak ditemukan" });
 
-      await db.delete(properti).where(eq(properti.id, id));
+      // Soft delete
+      await db.update(properti).set({ deletedAt: new Date() }).where(eq(properti.id, id));
       return res.status(200).json({ message: "Properti berhasil dihapus" });
     } catch (error) {
       console.error("DELETE properti error:", error);

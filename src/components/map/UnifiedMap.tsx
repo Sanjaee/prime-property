@@ -191,9 +191,10 @@ export function UnifiedMap({ theme }: { theme?: "light" | "dark" } = {}) {
   const [routeLoading, setRouteLoading] = useState(false);
 
   const propertiesGeoJSON = useMemo((): GeoJSON.FeatureCollection<GeoJSON.Point, PropertiMapItem> => {
+    const safeProperties = Array.isArray(properties) ? properties : [];
     return {
       type: "FeatureCollection",
-      features: properties.map((p) => ({
+      features: safeProperties.map((p) => ({
         type: "Feature" as const,
         geometry: {
           type: "Point" as const,
@@ -277,7 +278,14 @@ export function UnifiedMap({ theme }: { theme?: "light" | "dark" } = {}) {
   useEffect(() => {
     fetch("/api/properti")
       .then((res) => res.json())
-      .then((data) => setProperties(data))
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setProperties(data);
+        } else {
+          console.error("Expected array from /api/properti, got:", data);
+          setProperties([]);
+        }
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);

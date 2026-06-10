@@ -3,6 +3,7 @@ import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/toaster";
+import { Toaster as SonnerToaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ApiProvider } from "@/components/contex/ApiProvider";
 import { MapUIProvider } from "@/components/contex/MapUIContext";
@@ -56,6 +57,16 @@ export default function App({
                 />
                 <Component {...pageProps} />
                 <Toaster />
+                <SonnerToaster 
+                  position="top-center" 
+                  toastOptions={{
+                    style: {
+                      background: "#1A1A1A",
+                      color: "#C6A87C",
+                      border: "1px solid #C6A87C"
+                    }
+                  }}
+                />
               </TooltipProvider>
             </MapUIProvider>
           </ApiProvider>
