@@ -124,16 +124,7 @@ export default function Navbar() {
                   >
                     Kontak
                   </Button>
-                  {session?.user && (session.user as { role?: string })?.role === "admin" && (
-                    <Button
-                      variant="outline"
-                      className="justify-start text-base font-medium w-full py-6 rounded-xl mt-2"
-                      onClick={() => router.push("/admin")}
-                    >
-                      <Shield className="size-4 mr-2" />
-                      Admin
-                    </Button>
-                  )}
+
                   {!session?.user && (
                     <Button 
                       onClick={() => router.push("/agent/login")} 
@@ -147,21 +138,7 @@ export default function Navbar() {
             </Sheet>
           </div>
 
-          {session?.user && (
-            <div className="hidden md:block">
-              {(session.user as { role?: string })?.role === "admin" && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => router.push("/admin")}
-                  className="shrink-0"
-                >
-                  <Shield className="size-4 mr-1.5" />
-                  Admin
-                </Button>
-              )}
-            </div>
-          )}
+
           {isLoading ? (
             <div className="h-9 w-20 animate-pulse rounded-md bg-muted" />
           ) : session?.user ? (

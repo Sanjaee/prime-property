@@ -38,6 +38,21 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
 
+  const getInitials = (name?: string, email?: string) => {
+    if (name) {
+      return name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    }
+    if (email) {
+      return email[0].toUpperCase()
+    }
+    return "U"
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -47,11 +62,13 @@ export function NavUser({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+              <Avatar className="h-8 w-8 ring-2 ring-offset-2 ring-offset-background ring-ring">
+                <AvatarImage src={user.avatar} alt={user.name} className="object-cover" />
+                <AvatarFallback className="bg-primary text-primary-foreground">
+                  {getInitials(user.name, user.email)}
+                </AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
+              <div className="grid flex-1 text-left text-sm leading-tight ml-1">
                 <span className="truncate font-medium">{user.name}</span>
                 <span className="truncate text-xs text-muted-foreground">
                   {user.email}
@@ -67,10 +84,12 @@ export function NavUser({
             sideOffset={4}
           >
             <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+              <div className="flex items-center gap-3 px-2 py-1.5 text-left text-sm">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={user.avatar} alt={user.name} className="object-cover" />
+                  <AvatarFallback className="bg-primary text-primary-foreground">
+                    {getInitials(user.name, user.email)}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
@@ -81,7 +100,7 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/agent/login" })}>
-              <IconLogout />
+              <IconLogout className="mr-2 h-4 w-4" />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>

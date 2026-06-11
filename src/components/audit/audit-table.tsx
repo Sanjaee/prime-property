@@ -3,7 +3,13 @@
 import * as React from "react"
 import { format } from "date-fns"
 import { id as localeId } from "date-fns/locale"
-import { IconEye } from "@tabler/icons-react"
+import { 
+  IconEye,
+  IconChevronsLeft,
+  IconChevronLeft,
+  IconChevronRight,
+  IconChevronsRight
+} from "@tabler/icons-react"
 import {
   Table,
   TableBody,
@@ -14,6 +20,14 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import {
   Dialog,
   DialogContent,
@@ -37,10 +51,20 @@ export interface AuditLogRow {
 
 interface AuditTableProps {
   data: AuditLogRow[]
+  hidePagination?: boolean
 }
 
-export function AuditTable({ data }: AuditTableProps) {
+export function AuditTable({ data, hidePagination }: AuditTableProps) {
   const [selectedLog, setSelectedLog] = React.useState<AuditLogRow | null>(null)
+  const [page, setPage] = React.useState(1)
+  const [pageSize, setPageSize] = React.useState(10)
+
+  const total = data.length
+  const totalPages = Math.ceil(total / pageSize) || 1
+  const paginatedData = React.useMemo(() => {
+    const start = (page - 1) * pageSize
+    return data.slice(start, start + pageSize)
+  }, [data, page, pageSize])
 
   const getActionBadge = (action: string) => {
     switch (action) {
@@ -98,14 +122,14 @@ export function AuditTable({ data }: AuditTableProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.length === 0 ? (
+            {paginatedData.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="text-center h-24">
                   Tidak ada data audit log ditemukan.
                 </TableCell>
               </TableRow>
             ) : (
-              data.map((log) => (
+              paginatedData.map((log) => (
                 <TableRow key={log.id}>
                   <TableCell className="whitespace-nowrap">
                     {format(new Date(log.createdAt), "dd MMM yyyy, HH:mm", { locale: localeId })}
@@ -134,6 +158,80 @@ export function AuditTable({ data }: AuditTableProps) {
           </TableBody>
         </Table>
       </div>
+
+      {!hidePagination && (
+        <div className="flex items-center justify-between pt-4 mt-4">
+          <div className="hidden flex-1 text-sm text-muted-foreground lg:flex">
+            Total {total} record(s).
+          </div>
+          <div className="flex w-full items-center gap-8 lg:w-fit">
+            <div className="hidden items-center gap-2 lg:flex">
+              <Label htmlFor="rows-per-page" className="text-sm font-medium">
+                Rows per page
+              </Label>
+              <Select
+                value={`${pageSize}`}
+                onValueChange={(value) => {
+                  setPageSize(Number(value))
+                  setPage(1)
+                }}
+              >
+                <SelectTrigger size="sm" className="w-20" id="rows-per-page">
+                  <SelectValue placeholder={`${pageSize}`} />
+                </SelectTrigger>
+                <SelectContent side="top">
+                  {[10, 20, 30, 40, 50].map((size) => (
+                    <SelectItem key={size} value={`${size}`}>
+                      {size}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex w-fit items-center justify-center text-sm font-medium">
+              Page {page} of {totalPages}
+            </div>
+            <div className="ml-auto flex items-center gap-2 lg:ml-0">
+              <Button
+                variant="outline"
+                className="hidden h-8 w-8 p-0 lg:flex"
+                onClick={() => setPage(1)}
+                disabled={page <= 1}
+              >
+                <span className="sr-only">Go to first page</span>
+                <IconChevronsLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                className="h-8 w-8 p-0"
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page <= 1}
+              >
+                <span className="sr-only">Go to previous page</span>
+                <IconChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                className="h-8 w-8 p-0"
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page >= totalPages || total === 0}
+              >
+                <span className="sr-only">Go to next page</span>
+                <IconChevronRight className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                className="hidden h-8 w-8 p-0 lg:flex"
+                onClick={() => setPage(totalPages)}
+                disabled={page >= totalPages || total === 0}
+              >
+                <span className="sr-only">Go to last page</span>
+                <IconChevronsRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Dialog open={!!selectedLog} onOpenChange={(val) => !val && setSelectedLog(null)}>
         <DialogContent className="max-w-6xl w-[95vw] max-h-[85vh] overflow-y-auto">

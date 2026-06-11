@@ -26,14 +26,29 @@ import {
 export function SiteHeader() {
   const { data: session } = useSession()
   
+  const getInitials = (name?: string | null, email?: string | null) => {
+    if (name) {
+      return name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2);
+    }
+    if (email) {
+      return email[0].toUpperCase();
+    }
+    return "U";
+  };
+
   const user = {
     name: session?.user?.name || "Admin",
     email: session?.user?.email || "admin@prime.id",
-    avatar: "https://github.com/shadcn.png", // Kita biarkan dummy avatar karena belum ada fitur upload foto profil
+    image: session?.user?.image || undefined,
   }
 
   return (
-    <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b bg-[#1A1A1A] text-white transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
+    <header className="flex h-16 shrink-0 items-center gap-2 border-b bg-[#1A1A1A] text-white transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-16">
       <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
         <SidebarTrigger className="-ml-1" />
         <Separator
@@ -44,12 +59,14 @@ export function SiteHeader() {
         <div className="ml-auto flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback>CN</AvatarFallback>
+              <button className="flex items-center gap-2 rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-[#1A1A1A]">
+                <Avatar className="h-9 w-9 ring-2 ring-offset-2 ring-offset-[#1A1A1A] ring-prime-gold">
+                  <AvatarImage src={user.image} alt={user.name} className="object-cover" />
+                  <AvatarFallback className="bg-prime-gold text-prime-black font-bold">
+                    {getInitials(user.name, user.email)}
+                  </AvatarFallback>
                 </Avatar>
-              </Button>
+              </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
               <DropdownMenuLabel className="font-normal">

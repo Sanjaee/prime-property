@@ -32,10 +32,16 @@ export default async function handler(
       const logs = await db
         .select({
           id: audit_logs.id,
-          action: audit_logs.action,
+          userFullName: users.fullName,
+          userEmail: users.email,
           tableName: audit_logs.tableName,
+          recordId: audit_logs.recordId,
+          action: audit_logs.action,
+          oldData: audit_logs.oldData,
+          newData: audit_logs.newData,
+          changedFields: audit_logs.changedFields,
+          ipAddress: audit_logs.ipAddress,
           createdAt: audit_logs.createdAt,
-          adminName: users.fullName,
         })
         .from(audit_logs)
         .leftJoin(users, eq(audit_logs.userId, users.id))
@@ -43,16 +49,7 @@ export default async function handler(
         .limit(limit)
         .offset(offset);
 
-      const formatted = logs.map((log) => ({
-        id: log.id,
-        header: log.action.toUpperCase(), // e.g., "CREATE", "UPDATE"
-        sectionType: log.tableName, // e.g., "properti", "users"
-        status: "Done", // Audit logs are past actions
-        target: log.createdAt,
-        reviewer: log.adminName || "System / Deleted User",
-      }));
-
-      return res.status(200).json({ status: "success", role, data: formatted, total: totalCount.count, page, limit });
+      return res.status(200).json({ status: "success", role, data: logs, total: totalCount.count, page, limit });
       
     } else if (role === "admin") {
       // Admin sees recent contact inquiries / leads
