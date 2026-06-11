@@ -68,7 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json({ success: true, message: "Pesan terkirim, tim kami akan menghubungi Anda." });
   } catch (error: any) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ error: error.errors[0].message });
+      return res.status(400).json({ error: error.issues[0].message });
     }
     console.error("Contact API Error:", error);
     return res.status(500).json({ error: "Gagal mengirim pesan" });
