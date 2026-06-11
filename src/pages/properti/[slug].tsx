@@ -34,10 +34,12 @@ import {
   Mail,
   Phone,
   MessageCircle,
+  X,
 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
+  DialogClose,
 } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import {
@@ -131,17 +133,7 @@ export default function PropertiDetailPage({ data }: { data: PageData | null }) 
   };
 
   const openOwnerEmail = (ownerEmail: string, propertyName: string, url: string) => {
-    const parsed = contactPropertyMessageSchema.safeParse({ message: contactMessage });
-    if (!parsed.success) {
-      scrollToInvalidField(parsed.error);
-      toast({
-        title: "Data tidak valid",
-        description: getFirstZodError(parsed.error),
-        variant: "destructive",
-      });
-      return;
-    }
-    const body = buildContactBody(parsed.data.message, propertyName, url);
+    const body = buildContactBody("", propertyName, url);
     const subject = encodeURIComponent(`Minat properti: ${propertyName}`);
     const mailto = `mailto:${ownerEmail}?subject=${subject}&body=${encodeURIComponent(body)}`;
     if (typeof window !== "undefined") {
@@ -150,16 +142,6 @@ export default function PropertiDetailPage({ data }: { data: PageData | null }) 
   };
 
   const openOwnerWhatsApp = (phoneRaw: string | null | undefined, propertyName: string, url: string) => {
-    const parsed = contactPropertyMessageSchema.safeParse({ message: contactMessage });
-    if (!parsed.success) {
-      scrollToInvalidField(parsed.error);
-      toast({
-        title: "Data tidak valid",
-        description: getFirstZodError(parsed.error),
-        variant: "destructive",
-      });
-      return;
-    }
     const wa = toWhatsAppDigits(phoneRaw);
     if (!wa) {
       toast({
@@ -169,7 +151,7 @@ export default function PropertiDetailPage({ data }: { data: PageData | null }) 
       });
       return;
     }
-    const body = buildContactBody(parsed.data.message, propertyName, url);
+    const body = buildContactBody("", propertyName, url);
     const href = `https://wa.me/${wa}?text=${encodeURIComponent(body)}`;
     if (typeof window !== "undefined") {
       window.open(href, "_blank", "noopener,noreferrer");
@@ -231,29 +213,6 @@ export default function PropertiDetailPage({ data }: { data: PageData | null }) 
     >
       <Navbar />
       <main className="flex-1">
-        {/* Top bar */}
-        <div className="sticky top-16 z-40 bg-white/95 backdrop-blur border-b px-4 py-3 flex items-center justify-between">
-          <Button variant="ghost" size="sm" onClick={() => router.push("/")}>
-            <ArrowLeft className="size-4 mr-2" />
-            Kembali
-          </Button>
-          <div className="flex gap-2">
-            <Button variant="ghost" size="icon" onClick={handleShare}>
-              <Share2 className="size-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setSaved(!saved)}
-              className={saved ? "text-red-500" : ""}
-            >
-              <Heart
-                className={`size-4 ${saved ? "fill-current" : ""}`}
-              />
-            </Button>
-          </div>
-        </div>
-
         <div className="container max-w-6xl mx-auto px-4 py-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main content */}
@@ -331,14 +290,18 @@ export default function PropertiDetailPage({ data }: { data: PageData | null }) 
 
               {/* Dialog - Gambar diperbesar */}
               <Dialog open={imageDialogOpen} onOpenChange={setImageDialogOpen}>
-                <DialogContent className="max-w-[95vw] w-full max-h-[95vh] p-0 border-0 bg-black/40 backdrop-blur-md gap-0 overflow-hidden [&>button]:right-2 [&>button]:top-2 [&>button]:bg-white/10 [&>button]:hover:bg-white/20 [&>button]:text-white">
-                  <div className="relative w-full h-[85vh] flex items-center justify-center">
+                <DialogContent showCloseButton={false} className="max-w-[95vw] sm:max-w-[95vw] w-screen h-[95vh] p-0 border-none bg-transparent shadow-none flex flex-col justify-center items-center overflow-hidden">
+                  <DialogClose className="absolute right-2 top-2 sm:right-6 sm:top-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-black/20 backdrop-blur-md text-white transition-all hover:bg-black/40 hover:scale-105 outline-none focus:ring-0">
+                    <X className="size-6" />
+                    <span className="sr-only">Tutup</span>
+                  </DialogClose>
+                  <div className="relative w-full h-full flex items-center justify-center">
                     <Image
                       src={displayImages[slideIndex] || PLACEHOLDER}
                       alt={`${p.name} - ${slideIndex + 1}`}
                       fill
                       className="object-contain"
-                      sizes="95vw"
+                      sizes="100vw"
                       onClick={(e) => e.stopPropagation()}
                     />
                     {hasMultipleImages && (
@@ -346,25 +309,22 @@ export default function PropertiDetailPage({ data }: { data: PageData | null }) 
                         <button
                           type="button"
                           onClick={() => setSlideIndex((i) => (i <= 0 ? displayImages.length - 1 : i - 1))}
-                          className="absolute left-2 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                          className="absolute left-4 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-black/20 backdrop-blur-md hover:bg-black/40 hover:scale-105 text-white transition-all z-50 outline-none focus:ring-0"
                           aria-label="Gambar sebelumnya"
                         >
-                          <ChevronLeft className="size-6" />
+                          <ChevronLeft className="size-8" />
                         </button>
                         <button
                           type="button"
                           onClick={() => setSlideIndex((i) => (i >= displayImages.length - 1 ? 0 : i + 1))}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                          className="absolute right-4 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-black/20 backdrop-blur-md hover:bg-black/40 hover:scale-105 text-white transition-all z-50 outline-none focus:ring-0"
                           aria-label="Gambar berikutnya"
                         >
-                          <ChevronRight className="size-6" />
+                          <ChevronRight className="size-8" />
                         </button>
                       </>
                     )}
                   </div>
-                  <p className="text-center text-white/80 text-sm py-2">
-                    {slideIndex + 1} / {displayImages.length}
-                  </p>
                 </DialogContent>
               </Dialog>
 
@@ -372,9 +332,7 @@ export default function PropertiDetailPage({ data }: { data: PageData | null }) 
               <div>
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
                   <h1 className="text-2xl font-bold text-foreground">{p.name}</h1>
-                  <p className="text-xl font-bold text-orange-500 shrink-0">
-                    {formatPrice(p.price, p.priceUnit, p.listingType, p.rentPeriod)}
-                  </p>
+                  
                 </div>
                 <p className="text-muted-foreground flex items-center gap-1.5 mt-1">
                   <MapPin className="size-4 shrink-0" />
@@ -581,7 +539,7 @@ export default function PropertiDetailPage({ data }: { data: PageData | null }) 
 
             {/* Sidebar - Contact */}
             <div className="lg:col-span-1">
-              <div className="sticky top-40">
+              <div className="sticky top-26">
                 <motion.div 
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -642,7 +600,7 @@ export default function PropertiDetailPage({ data }: { data: PageData | null }) 
                       <Button
                         type="button"
                         className="w-full h-12 gap-2 bg-prime-gold hover:bg-[#d4af37] text-prime-black font-semibold text-sm rounded-xl transition-all"
-                        onClick={() => openOwnerWhatsApp(owner?.phone, p.name, typeof window !== "undefined" ? window.location.href : "")}
+                        onClick={() => openOwnerWhatsApp(p.whatsapp || owner?.phone, p.name, typeof window !== "undefined" ? window.location.href : "")}
                       >
                         <MessageCircle className="size-4" />
                         Hubungi Agent
@@ -699,6 +657,7 @@ type PageData = {
     tingkat: string | null;
     priceRupiah: string | null;
     siap: string | null;
+    whatsapp: string | null;
   };
   detail: {
     landArea: string | null;
@@ -786,6 +745,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           tingkat: row.tingkat ? String(row.tingkat) : null,
           priceRupiah: row.priceRupiah ? String(row.priceRupiah) : null,
           siap: row.siap,
+          whatsapp: row.whatsapp ?? null,
         },
         detail: detailRow
           ? {

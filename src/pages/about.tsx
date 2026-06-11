@@ -161,8 +161,7 @@ export default function AboutPage() {
       </main>
 
       {/* Footer minimalis */}
-      <footer className="py-8 text-center text-gray-500 text-sm border-t border-gray-100">
-        <p>&copy; {new Date().getFullYear()} Prime Property. Hak cipta dilindungi undang-undang.</p>
+      <footer>
       </footer>
     </div>
   );

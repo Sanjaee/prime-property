@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import LoadingBar from "react-top-loading-bar";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
+import Footer from "@/components/general/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -56,6 +57,7 @@ export default function App({
                   onLoaderFinished={() => setProgress(0)}
                 />
                 <Component {...pageProps} />
+                {!router.pathname.startsWith("/admin") && !router.pathname.startsWith("/agent") && <Footer />}
                 <Toaster />
                 <SonnerToaster 
                   position="top-center" 

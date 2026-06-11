@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { db } from "@/db";
 import { audit_logs, contact_messages, users } from "@/db/schema";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { authOptions } from "../../auth/[...nextauth]";
 
 export default async function handler(
@@ -21,8 +21,14 @@ export default async function handler(
 
     const role = (session.user as any).role;
     
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const offset = (page - 1) * limit;
+    
     if (role === "superadmin") {
       // Superadmin sees recent audit logs
+      const [totalCount] = await db.select({ count: sql<number>`count(*)::int` }).from(audit_logs);
+      
       const logs = await db
         .select({
           id: audit_logs.id,
@@ -34,7 +40,8 @@ export default async function handler(
         .from(audit_logs)
         .leftJoin(users, eq(audit_logs.userId, users.id))
         .orderBy(desc(audit_logs.createdAt))
-        .limit(10);
+        .limit(limit)
+        .offset(offset);
 
       const formatted = logs.map((log) => ({
         id: log.id,
@@ -45,10 +52,12 @@ export default async function handler(
         reviewer: log.adminName || "System / Deleted User",
       }));
 
-      return res.status(200).json({ status: "success", role, data: formatted });
+      return res.status(200).json({ status: "success", role, data: formatted, total: totalCount.count, page, limit });
       
     } else if (role === "admin") {
       // Admin sees recent contact inquiries / leads
+      const [totalCount] = await db.select({ count: sql<number>`count(*)::int` }).from(contact_messages);
+      
       const leads = await db
         .select({
           id: contact_messages.id,
@@ -60,7 +69,8 @@ export default async function handler(
         })
         .from(contact_messages)
         .orderBy(desc(contact_messages.createdAt))
-        .limit(10);
+        .limit(limit)
+        .offset(offset);
 
       const formatted = leads.map((lead) => ({
         id: lead.id,
@@ -71,7 +81,7 @@ export default async function handler(
         reviewer: lead.pesan.length > 50 ? lead.pesan.substring(0, 50) + "..." : lead.pesan,
       }));
 
-      return res.status(200).json({ status: "success", role, data: formatted });
+      return res.status(200).json({ status: "success", role, data: formatted, total: totalCount.count, page, limit });
       
     } else {
       return res.status(403).json({ error: "Forbidden access" });

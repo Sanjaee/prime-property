@@ -158,6 +158,7 @@ export default async function handler(
           mapsLink: validatedData.mapsLink ?? null,
           kawasan: JSON.stringify(validatedData.kawasan),
           unit: validatedData.unit ?? null,
+          whatsapp: validatedData.whatsapp ?? null,
         })
         .returning();
 

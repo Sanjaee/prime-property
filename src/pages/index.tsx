@@ -50,6 +50,44 @@ interface HomeProps {
 
 export default function Home({ properties }: HomeProps) {
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
+  const [kawasanFilter, setKawasanFilter] = useState("all");
+  const [tipeFilter, setTipeFilter] = useState("all");
+  const [maxHargaFilter, setMaxHargaFilter] = useState("");
+  const [displayProperties, setDisplayProperties] = useState(properties);
+  const [isSearching, setIsSearching] = useState(false);
+
+  const handleSearch = async () => {
+    setIsSearching(true);
+    try {
+      const res = await fetch("/api/properti");
+      if (res.ok) {
+        const allProps = await res.json();
+        const filtered = allProps.filter((p: any) => {
+          let match = true;
+          if (kawasanFilter !== "all") {
+            const kwsn = Array.isArray(p.kawasan) ? p.kawasan : [];
+            if (!kwsn.includes(kawasanFilter)) match = false;
+          }
+          if (tipeFilter !== "all" && p.type !== tipeFilter) {
+            match = false;
+          }
+          if (maxHargaFilter && Number(maxHargaFilter) > 0) {
+            const price = Number(p.priceRupiah || p.price);
+            if (price > Number(maxHargaFilter)) match = false;
+          }
+          return match;
+        });
+        setDisplayProperties(filtered.slice(0, 6));
+        
+        // Scroll to the property section
+        document.getElementById("koleksi-pilihan")?.scrollIntoView({ behavior: "smooth" });
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsSearching(false);
+    }
+  };
 
   return (
     <div className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-prime-white font-sans text-prime-black`}>
@@ -97,7 +135,7 @@ export default function Home({ properties }: HomeProps) {
         <div className="bg-white rounded-xl shadow-xl p-4 flex flex-col md:flex-row gap-4 items-end border border-gray-100 max-w-4xl mx-auto">
           <div className="w-full md:w-1/3">
             <label className="text-xs font-semibold text-gray-500 mb-1 block uppercase tracking-wider">Kawasan</label>
-            <Select>
+            <Select value={kawasanFilter} onValueChange={setKawasanFilter}>
               <SelectTrigger className="bg-prime-gray border-none h-11 w-full text-left">
                 <SelectValue placeholder="Semua Kawasan" />
               </SelectTrigger>
@@ -116,7 +154,7 @@ export default function Home({ properties }: HomeProps) {
           </div>
           <div className="w-full md:w-1/3">
             <label className="text-xs font-semibold text-gray-500 mb-1 block uppercase tracking-wider">Tipe</label>
-            <Select>
+            <Select value={tipeFilter} onValueChange={setTipeFilter}>
               <SelectTrigger className="bg-prime-gray border-none h-11 w-full text-left">
                 <SelectValue placeholder="Semua Tipe" />
               </SelectTrigger>
@@ -129,10 +167,10 @@ export default function Home({ properties }: HomeProps) {
           </div>
           <div className="w-full md:w-1/3">
             <label className="text-xs font-semibold text-gray-500 mb-1 block uppercase tracking-wider">Harga Maksimum</label>
-            <Input type="number" placeholder="Rp Tanpa batas" className="bg-prime-gray border-none h-11" />
+            <Input type="number" placeholder="Rp Tanpa batas" className="bg-prime-gray border-none h-11" value={maxHargaFilter} onChange={(e) => setMaxHargaFilter(e.target.value)} />
           </div>
-          <Button className="w-full md:w-auto h-11 px-8 bg-prime-gold hover:brightness-95 text-prime-black font-semibold shadow-md">
-            Cari Properti
+          <Button onClick={handleSearch} disabled={isSearching} className="w-full md:w-auto h-11 px-8 bg-prime-gold hover:brightness-95 text-prime-black font-semibold shadow-md">
+            {isSearching ? "Mencari..." : "Cari Properti"}
           </Button>
         </div>
       </section>
@@ -179,10 +217,14 @@ export default function Home({ properties }: HomeProps) {
         </div>
 
         <motion.div
+          key={displayProperties.map(p => p.id).join(",")}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
         >
-          {properties.map((prop) => (
+          {displayProperties.map((prop) => (
             <motion.div key={prop.id} variants={fadeUp}>
               <Link href={`/properti/${prop.slug}`} className="group block rounded-2xl overflow-hidden border border-gray-100 bg-white hover:shadow-xl transition-all duration-300 h-full">
                 <div className="h-48 bg-prime-black relative flex items-end justify-center">
@@ -206,7 +248,7 @@ export default function Home({ properties }: HomeProps) {
                 </div>
 
                 <div className="p-5">
-                  <div className="text-xs text-prime-gold font-bold mb-2 uppercase tracking-wider">{prop.kawasan ? JSON.parse(prop.kawasan as string).join(", ") : prop.district || "Lokasi"}</div>
+                  <div className="text-xs text-prime-gold font-bold mb-2 uppercase tracking-wider">{prop.kawasan ? (Array.isArray(prop.kawasan) ? prop.kawasan.join(", ") : JSON.parse(prop.kawasan as string).join(", ")) : prop.district || "Lokasi"}</div>
                   <h4 className="text-lg font-bold text-prime-black mb-1 line-clamp-1">{prop.name}</h4>
                   <p className="text-gray-500 text-sm mb-3 line-clamp-2">{prop.description}</p>
                   <div className="flex flex-wrap gap-2 mb-4">
@@ -245,7 +287,7 @@ export default function Home({ properties }: HomeProps) {
             </motion.div>
           ))}
 
-          {properties.length === 0 && (
+          {displayProperties.length === 0 && (
             <div className="col-span-full text-center py-12 text-gray-500">
               Belum ada data properti unggulan.
             </div>

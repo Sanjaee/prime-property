@@ -34,6 +34,7 @@ export const propertiSchema = z.object({
   latitude: z.coerce.number().min(-90, "Latitude minimal -90").max(90, "Latitude maksimal 90"),
   longitude: z.coerce.number().min(-180, "Longitude minimal -180").max(180, "Longitude maksimal 180"),
   listingType: z.enum(["sale", "rent"]),
+  whatsapp: z.string().optional().nullable(),
 });
 
 export type PropertiFormValues = z.infer<typeof propertiSchema>;

@@ -6,6 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { MoreVertical, CheckCircle2, Clock } from "lucide-react";
+import { IconChevronLeft, IconChevronRight, IconChevronsLeft, IconChevronsRight } from "@tabler/icons-react";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 interface ActivityData {
   id: string;
@@ -20,15 +24,20 @@ export function DashboardActivityTable() {
   const [data, setData] = useState<ActivityData[]>([]);
   const [role, setRole] = useState<string>("");
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
+      setLoading(true);
       try {
-        const res = await fetch("/api/admin/dashboard/activity");
+        const res = await fetch(`/api/admin/dashboard/activity?page=${page}&limit=${pageSize}`);
         if (res.ok) {
           const json = await res.json();
           setData(json.data);
           setRole(json.role);
+          setTotal(json.total || 0);
         }
       } catch (error) {
         console.error("Failed to fetch activity data", error);
@@ -37,7 +46,7 @@ export function DashboardActivityTable() {
       }
     }
     fetchData();
-  }, []);
+  }, [page, pageSize]);
 
   if (loading) {
     return (
@@ -73,14 +82,6 @@ export function DashboardActivityTable() {
         <div>
           <CardTitle>{title}</CardTitle>
           <CardDescription>{description}</CardDescription>
-        </div>
-        <div className="flex items-center gap-2">
-          <button className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 border border-zinc-200 bg-white shadow-sm hover:bg-zinc-100 hover:text-zinc-900 h-9 px-4 py-2 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-800 dark:hover:text-zinc-50">
-            Customize Columns
-          </button>
-          <button className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 border border-amber-200 bg-amber-50 text-amber-900 shadow-sm hover:bg-amber-100 h-9 px-4 py-2 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-400">
-            + Add Section
-          </button>
         </div>
       </CardHeader>
       <CardContent>
@@ -144,6 +145,78 @@ export function DashboardActivityTable() {
               )}
             </TableBody>
           </Table>
+        </div>
+
+        <div className="flex items-center justify-between pt-4 mt-4">
+          <div className="hidden flex-1 text-sm text-muted-foreground lg:flex">
+            Total {total} record(s).
+          </div>
+          <div className="flex w-full items-center gap-8 lg:w-fit">
+            <div className="hidden items-center gap-2 lg:flex">
+              <Label htmlFor="rows-per-page" className="text-sm font-medium">
+                Rows per page
+              </Label>
+              <Select
+                value={`${pageSize}`}
+                onValueChange={(value) => {
+                  setPageSize(Number(value));
+                  setPage(1);
+                }}
+              >
+                <SelectTrigger size="sm" className="w-20" id="rows-per-page">
+                  <SelectValue placeholder={`${pageSize}`} />
+                </SelectTrigger>
+                <SelectContent side="top">
+                  {[10, 20, 30, 40, 50].map((size) => (
+                    <SelectItem key={size} value={`${size}`}>
+                      {size}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex w-fit items-center justify-center text-sm font-medium">
+              Page {page} of {Math.ceil(total / pageSize) || 1}
+            </div>
+            <div className="ml-auto flex items-center gap-2 lg:ml-0">
+              <Button
+                variant="outline"
+                className="hidden h-8 w-8 p-0 lg:flex"
+                onClick={() => setPage(1)}
+                disabled={page <= 1}
+              >
+                <span className="sr-only">Go to first page</span>
+                <IconChevronsLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                className="h-8 w-8 p-0"
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page <= 1}
+              >
+                <span className="sr-only">Go to previous page</span>
+                <IconChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                className="h-8 w-8 p-0"
+                onClick={() => setPage((p) => Math.min(Math.ceil(total / pageSize), p + 1))}
+                disabled={page >= Math.ceil(total / pageSize) || total === 0}
+              >
+                <span className="sr-only">Go to next page</span>
+                <IconChevronRight className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                className="hidden h-8 w-8 p-0 lg:flex"
+                onClick={() => setPage(Math.ceil(total / pageSize))}
+                disabled={page >= Math.ceil(total / pageSize) || total === 0}
+              >
+                <span className="sr-only">Go to last page</span>
+                <IconChevronsRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

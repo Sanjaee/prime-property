@@ -89,6 +89,7 @@ export function PropertiForm({ initialData, onSave, onCancel }: PropertiFormProp
       longitude: 0,
       postalCode: "",
       listingType: "sale",
+      whatsapp: "",
     },
   })
 
@@ -389,9 +390,14 @@ export function PropertiForm({ initialData, onSave, onCancel }: PropertiFormProp
                   <FormItem><FormLabel>Alamat Lengkap</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                 )} />
 
-                <FormField control={form.control} name="mapsLink" render={({ field }) => (
-                  <FormItem><FormLabel>Link Google Maps (Opsional)</FormLabel><FormControl><Input placeholder="https://maps.google.com/..." {...field} value={field.value || ""} /></FormControl><FormMessage /></FormItem>
-                )} />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField control={form.control} name="mapsLink" render={({ field }) => (
+                    <FormItem><FormLabel>Link Google Maps (Opsional)</FormLabel><FormControl><Input placeholder="https://maps.google.com/..." {...field} value={field.value || ""} /></FormControl><FormMessage /></FormItem>
+                  )} />
+                  <FormField control={form.control} name="whatsapp" render={({ field }) => (
+                    <FormItem><FormLabel>No. WhatsApp Agen (Opsional)</FormLabel><FormControl><Input placeholder="6281234567890" {...field} value={field.value || ""} /></FormControl><FormMessage /></FormItem>
+                  )} />
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <FormField control={form.control} name="latitude" render={({ field }) => (

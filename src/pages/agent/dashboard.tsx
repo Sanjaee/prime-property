@@ -3,15 +3,13 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { AppSidebar } from "@/components/dashboard/app-sidebar"
 import { ChartAreaInteractive } from "@/components/dashboard/chart-area-interactive"
-import { DataTable } from "@/components/dashboard/data-table"
+import { DashboardActivityTable } from "@/components/admin/DashboardActivityTable"
 import { SectionCards } from "@/components/dashboard/section-cards"
 import { SiteHeader } from "@/components/dashboard/site-header"
 import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
-
-import data from "./data.json"
 
 export default function AgentDashboard() {
   return (
@@ -33,7 +31,7 @@ export default function AgentDashboard() {
               <div className="px-4 lg:px-6">
                 <ChartAreaInteractive />
               </div>
-              <DataTable data={data as any} />
+              <DashboardActivityTable />
             </div>
           </div>
         </div>

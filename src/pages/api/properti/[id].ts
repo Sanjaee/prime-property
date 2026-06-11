@@ -99,7 +99,8 @@ export default async function handler(
       const changedFields = Object.keys(validatedData).filter(key => {
         const oldVal = (oldData as any)[key];
         const newVal = (validatedData as any)[key];
-        return JSON.stringify(oldVal) !== JSON.stringify(newVal);
+        const stringifyVal = (val: any) => JSON.stringify(val, (_, v) => typeof v === 'bigint' ? v.toString() : v);
+        return stringifyVal(oldVal) !== stringifyVal(newVal);
       });
 
       const [updated] = await db
@@ -128,6 +129,7 @@ export default async function handler(
           mapsLink: validatedData.mapsLink ?? null,
           kawasan: JSON.stringify(validatedData.kawasan),
           unit: validatedData.unit ?? null,
+          whatsapp: validatedData.whatsapp ?? null,
           updatedAt: new Date(),
         })
         .where(eq(properti.id, id))

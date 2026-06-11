@@ -280,6 +280,11 @@ export const properti = pgTable("properti", {
   }),
 
   /**
+   * Nomor WhatsApp agen untuk dihubungi (opsional)
+   */
+  whatsapp: varchar("whatsapp", { length: 50 }),
+
+  /**
    * AC-8.3: soft delete — properti yang dihapus tidak tampil di listing
    * Set ke timestamp saat dihapus, null berarti aktif
    */

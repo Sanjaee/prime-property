@@ -10,6 +10,10 @@ import { Label } from "@/components/ui/label";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import Footer from "@/components/general/Footer";
 
 // Load map dynamically to avoid SSR issues with mapbox-gl
 const PropertyLocationMap = dynamic(
@@ -27,29 +31,64 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const contactSchema = z.object({
+  name: z.string().min(2, "Nama minimal 2 karakter"),
+  email: z.string().email("Format email tidak valid"),
+  phone: z.string().min(10, "Nomor HP minimal 10 digit"),
+  message: z.string().min(10, "Pesan minimal 10 karakter"),
+});
+
+type ContactFormValues = z.infer<typeof contactSchema>;
+
 export default function ContactPage() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Kantor Pusat Prime Property (Contoh koordinat SCBD Jakarta)
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ContactFormValues>({
+    resolver: zodResolver(contactSchema),
+  });
+
+  // Kantor Pusat Prime Property
   const officeLocation = {
     lat: -6.227448,
     lng: 106.808605,
     address: "District 8, SCBD Lot 28, Jl. Jend. Sudirman Kav 52-53, Jakarta Selatan, 12190"
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: ContactFormValues) => {
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      toast({
-        title: "Pesan Terkirim!",
-        description: "Tim kami akan segera menghubungi Anda kembali.",
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
       });
-      (e.target as HTMLFormElement).reset();
-    }, 1500);
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        throw new Error(result.error || "Gagal mengirim pesan");
+      }
+
+      toast({
+        title: "Sukses",
+        description: "Pesan terkirim, tim kami akan menghubungi Anda.",
+      });
+      reset();
+    } catch (error: any) {
+      toast({
+        title: "Gagal",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -77,44 +116,48 @@ export default function ContactPage() {
           </motion.div>
         </section>
 
-        <section className="container max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        <section className="container max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
             
             {/* Form Kontak */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-white p-8 md:p-10 rounded-3xl border border-gray-100 shadow-sm"
+              className="bg-white p-8 md:p-10 rounded-3xl border border-gray-100 shadow-sm lg:col-span-7 flex flex-col"
             >
               <h2 className="text-2xl font-bold mb-6">Kirim Pesan</h2>
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 flex flex-col flex-grow">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="name">Nama Lengkap</Label>
-                    <Input id="name" placeholder="John Doe" required className="h-12 bg-gray-50 border-gray-200" />
+                    <Input id="name" placeholder="John Doe" {...register("name")} className={`h-12 bg-gray-50 border-gray-200 ${errors.name ? "border-red-500" : ""}`} />
+                    {errors.name && <p className="text-red-500 text-xs">{errors.name.message}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="phone">Nomor Telepon</Label>
-                    <Input id="phone" type="tel" placeholder="0812-3456-7890" required className="h-12 bg-gray-50 border-gray-200" />
+                    <Input id="phone" type="tel" placeholder="0812-3456-7890" {...register("phone")} className={`h-12 bg-gray-50 border-gray-200 ${errors.phone ? "border-red-500" : ""}`} />
+                    {errors.phone && <p className="text-red-500 text-xs">{errors.phone.message}</p>}
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" placeholder="john@example.com" required className="h-12 bg-gray-50 border-gray-200" />
+                  <Input id="email" type="email" placeholder="john@example.com" {...register("email")} className={`h-12 bg-gray-50 border-gray-200 ${errors.email ? "border-red-500" : ""}`} />
+                  {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 flex flex-col flex-grow">
                   <Label htmlFor="message">Pesan Anda</Label>
-                  <Textarea id="message" placeholder="Tuliskan detail pertanyaan atau kebutuhan Anda di sini..." rows={5} required className="bg-gray-50 border-gray-200 resize-none" />
+                  <Textarea id="message" placeholder="Tuliskan detail pertanyaan atau kebutuhan Anda di sini..." {...register("message")} className={`flex-grow min-h-[150px] bg-gray-50 border-gray-200 resize-none ${errors.message ? "border-red-500" : ""}`} />
+                  {errors.message && <p className="text-red-500 text-xs">{errors.message.message}</p>}
                 </div>
                 <Button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="w-full h-12 bg-prime-gold hover:bg-[#d4af37] text-prime-black font-bold rounded-xl text-base shadow-md transition-all"
+                  className="w-full h-14 mt-auto bg-prime-gold hover:bg-[#d4af37] text-prime-black font-bold rounded-xl text-base shadow-md transition-all"
                 >
                   {isSubmitting ? "Mengirim..." : (
                     <>
-                      Kirim Pesan Sekarang <Send className="size-4 ml-2" />
+                      Kirim Pesan Sekarang <Send className="size-5 ml-2" />
                     </>
                   )}
                 </Button>
@@ -126,7 +169,7 @@ export default function ContactPage() {
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="flex flex-col gap-8"
+              className="flex flex-col gap-8 lg:col-span-5 h-full"
             >
               <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
                 <h2 className="text-xl font-bold mb-6">Informasi Kontak</h2>
@@ -146,7 +189,9 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h4 className="font-semibold text-prime-black mb-1">Telepon & WhatsApp</h4>
-                      <p className="text-gray-500 text-sm leading-relaxed">+62 811-1234-5678</p>
+                      <a href="https://wa.me/6281112345678" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-prime-gold transition-colors text-sm leading-relaxed block">
+                        +62 811-1234-5678
+                      </a>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -155,7 +200,9 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h4 className="font-semibold text-prime-black mb-1">Email</h4>
-                      <p className="text-gray-500 text-sm leading-relaxed">halo@primeproperty.id</p>
+                      <a href="mailto:halo@primeproperty.id" className="text-gray-500 hover:text-prime-gold transition-colors text-sm leading-relaxed block">
+                        halo@primeproperty.id
+                      </a>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -189,9 +236,9 @@ export default function ContactPage() {
         </section>
       </main>
 
-      <footer className="py-8 text-center text-gray-500 text-sm border-t border-gray-200 bg-white">
-        <p>&copy; {new Date().getFullYear()} Prime Property. Hak cipta dilindungi undang-undang.</p>
-      </footer>
+      {/* Footer component already added in _app.tsx so we omit it here unless there's a specific reason. 
+          Ah, I see `</footer>` was left in the original contact.tsx at line 192, which was a syntax error.
+          I will leave it clean without footer since _app.tsx handles it. */}
     </div>
   );
 }
