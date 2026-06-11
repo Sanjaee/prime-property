@@ -123,7 +123,8 @@ export default async function handler(
 
     const dateMap = new Map<string, { admin: number; superadmin: number }>();
     for (const r of regResult.rows) {
-      const key = r.date instanceof Date ? r.date.toISOString().split('T')[0] : String(r.date);
+      const dateVal = r.date as any;
+      const key = dateVal instanceof Date ? dateVal.toISOString().split('T')[0] : String(dateVal);
       if (!dateMap.has(key)) {
         dateMap.set(key, { admin: 0, superadmin: 0 });
       }
