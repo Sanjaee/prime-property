@@ -12,6 +12,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, UserCheck, UserX, Shield } from "lucide-react";
 import { AllUsersTable } from "@/components/admin/AllUsersTable";
+import { DashboardActivityTable } from "@/components/admin/DashboardActivityTable";
 import {
   ChartContainer,
   ChartLegend,
@@ -259,6 +260,8 @@ export default function AdminPage() {
               </CardContent>
             </Card>
           )}
+
+          <DashboardActivityTable />
 
           <AllUsersTable
             users={users}
