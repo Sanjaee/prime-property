@@ -1,3 +1,6 @@
+"use client"
+
+import * as React from "react"
 import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -11,90 +14,130 @@ import {
 } from "@/components/ui/card"
 
 export function SectionCards() {
+  const [data, setData] = React.useState<any>(null);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch("/api/admin/dashboard/visitors");
+        const json = await res.json();
+        if (json.status === "success") {
+          // Calculate stats from the generated data
+          // We assume the data is sorted by date descending (from today backwards) 
+          // or we can sort it just in case.
+          const visitors = json.data.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+          
+          // Last 30 days
+          const current30 = visitors.slice(0, 30);
+          // Previous 30 days
+          const previous30 = visitors.slice(30, 60);
+
+          const currentTotal = current30.reduce((acc: number, val: any) => acc + val.desktop + val.mobile, 0);
+          const currentDesktop = current30.reduce((acc: number, val: any) => acc + val.desktop, 0);
+          const currentMobile = current30.reduce((acc: number, val: any) => acc + val.mobile, 0);
+
+          const previousTotal = previous30.reduce((acc: number, val: any) => acc + val.desktop + val.mobile, 0);
+          
+          let growthRate = 0;
+          if (previousTotal > 0) {
+            growthRate = ((currentTotal - previousTotal) / previousTotal) * 100;
+          }
+
+          setData({
+            total: currentTotal,
+            desktop: currentDesktop,
+            mobile: currentMobile,
+            growth: growthRate.toFixed(1)
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch visitors data", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading || !data) {
+    return (
+      <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+        {[...Array(4)].map((_, i) => (
+          <Card key={i} className="h-[140px] animate-pulse bg-muted/50" />
+        ))}
+      </div>
+    );
+  }
+
+  const isGrowthPositive = Number(data.growth) >= 0;
+
   return (
     <div className="grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card">
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Total Revenue</CardDescription>
+          <CardDescription>Total Visitors</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            $1,250.00
+            {data.total.toLocaleString()}
           </CardTitle>
           <CardAction>
-            <Badge variant="outline">
-              <IconTrendingUp />
-              +12.5%
+            <Badge variant="outline" className={isGrowthPositive ? "text-emerald-500" : "text-rose-500"}>
+              {isGrowthPositive ? <IconTrendingUp className="mr-1 size-3" /> : <IconTrendingDown className="mr-1 size-3" />}
+              {isGrowthPositive ? "+" : ""}{data.growth}%
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Trending up this month <IconTrendingUp className="size-4" />
-          </div>
           <div className="text-muted-foreground">
-            Visitors for the last 6 months
+            Total visitors for the last 30 days
           </div>
         </CardFooter>
       </Card>
+      
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>New Customers</CardDescription>
+          <CardDescription>Desktop Visitors</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            1,234
+            {data.desktop.toLocaleString()}
           </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconTrendingDown />
-              -20%
-            </Badge>
-          </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Down 20% this period <IconTrendingDown className="size-4" />
-          </div>
           <div className="text-muted-foreground">
-            Acquisition needs attention
+            {Math.round((data.desktop / data.total) * 100)}% of total traffic
           </div>
         </CardFooter>
       </Card>
+
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Active Accounts</CardDescription>
+          <CardDescription>Mobile Visitors</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            45,678
+            {data.mobile.toLocaleString()}
           </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconTrendingUp />
-              +12.5%
-            </Badge>
-          </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Strong user retention <IconTrendingUp className="size-4" />
+          <div className="text-muted-foreground">
+            {Math.round((data.mobile / data.total) * 100)}% of total traffic
           </div>
-          <div className="text-muted-foreground">Engagement exceed targets</div>
         </CardFooter>
       </Card>
+
       <Card className="@container/card">
         <CardHeader>
           <CardDescription>Growth Rate</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            4.5%
+            {isGrowthPositive ? "+" : ""}{data.growth}%
           </CardTitle>
           <CardAction>
-            <Badge variant="outline">
-              <IconTrendingUp />
-              +4.5%
+            <Badge variant="outline" className={isGrowthPositive ? "text-emerald-500" : "text-rose-500"}>
+              {isGrowthPositive ? <IconTrendingUp className="mr-1 size-3" /> : <IconTrendingDown className="mr-1 size-3" />}
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Steady performance increase <IconTrendingUp className="size-4" />
+          <div className="text-muted-foreground">
+            Compared to previous 30 days
           </div>
-          <div className="text-muted-foreground">Meets growth projections</div>
         </CardFooter>
       </Card>
     </div>

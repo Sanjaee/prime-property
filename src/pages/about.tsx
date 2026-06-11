@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Navbar from "@/components/general/Navbar";
 import { Geist, Geist_Mono } from "next/font/google";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { ShieldCheck, MapPin, Building2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 export default function AboutPage() {
   const router = useRouter();
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -29,7 +29,7 @@ export default function AboutPage() {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
   };
