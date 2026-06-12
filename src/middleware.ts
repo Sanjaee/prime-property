@@ -31,12 +31,12 @@ export function middleware(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
   const pathname = request.nextUrl.pathname;
   
-  const isAuthEndpoint = pathname.startsWith('/api/auth');
-  const maxLimit = isAuthEndpoint ? AUTH_LIMIT : GLOBAL_LIMIT;
-  
-  // Pisahkan key auth dan global agar rate limit terhitung terpisah
-  const limitKey = isAuthEndpoint ? `auth:${ip}` : `global:${ip}`;
+  // Skip if it's an auth endpoint since it's handled in [...nextauth].ts natively
+  if (pathname.startsWith('/api/auth')) {
+    return NextResponse.next();
+  }
 
+  const limitKey = `global:${ip}`;
   const now = Date.now();
   let rateData = rateLimitMap.get(limitKey);
 
@@ -51,7 +51,7 @@ export function middleware(request: NextRequest) {
   rateData.count++;
   rateLimitMap.set(limitKey, rateData);
 
-  if (rateData.count > maxLimit) {
+  if (rateData.count > GLOBAL_LIMIT) {
     return new NextResponse(
       JSON.stringify({ error: "Terlalu banyak permintaan. Silakan coba lagi nanti." }),
       { 

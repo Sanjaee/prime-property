@@ -3,7 +3,7 @@
 import * as React from "react"
 import { format } from "date-fns"
 import { id as localeId } from "date-fns/locale"
-import { 
+import {
   IconEye,
   IconChevronsLeft,
   IconChevronLeft,
@@ -70,7 +70,7 @@ interface AuditTableProps {
 
 export function AuditTable({ data, hidePagination }: AuditTableProps) {
   const [selectedLog, setSelectedLog] = React.useState<AuditLogRow | null>(null)
-  
+
   const [sorting, setSorting] = React.useState<SortingState>([
     { id: "createdAt", desc: true }
   ])
@@ -154,17 +154,46 @@ export function AuditTable({ data, hidePagination }: AuditTableProps) {
       id: "pengguna",
       accessorFn: (row) => `${row.userFullName || ""} ${row.userEmail || ""}`,
       header: "Pengguna",
-      cell: ({ row }) => (
-        <div className="flex flex-col">
-          <span className="font-medium text-prime-black">{row.original.userFullName || "Sistem"}</span>
-          <span className="text-xs text-muted-foreground">{row.original.userEmail || "Auto-generated"}</span>
-        </div>
-      ),
+      cell: ({ row }) => {
+        const table = (row.original.tableName || "").toLowerCase();
+        const isSecurity = table === 'security';
+        const isAuth = table === 'auth';
+        const hasUser = !!row.original.userFullName;
+        
+        const displayMain = hasUser ? row.original.userFullName : (row.original.ipAddress ? `IP: ${row.original.ipAddress}` : "Sistem");
+        const displaySub = hasUser ? row.original.userEmail : (isSecurity ? "Blocked Request" : (isAuth ? "Guest / Unregistered" : "Auto-generated"));
+
+        return (
+          <div className="flex flex-col">
+            <span className="font-medium text-prime-black">{displayMain}</span>
+            <span className="text-xs text-muted-foreground">{displaySub}</span>
+          </div>
+        );
+      },
     },
     {
       accessorKey: "action",
       header: ({ column }) => <SortableHeader column={column} title="Aksi" />,
-      cell: ({ row }) => getActionBadge(row.original.action),
+      cell: ({ row }) => {
+        const table = (row.original.tableName || "").toLowerCase();
+        
+        if (table === 'security') {
+          return <Badge className="bg-[#B33A3A] text-white hover:bg-[#B33A3A]/90 border-transparent">Blocked</Badge>;
+        }
+        
+        if (table === 'auth') {
+          const newDataStr = String(row.original.newData || "").toLowerCase();
+          if (newDataStr.includes('login')) {
+             return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 border-transparent">Login</Badge>;
+          }
+          if (newDataStr.includes('logout')) {
+             return <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-200 border-transparent">Logout</Badge>;
+          }
+          return <Badge variant="secondary">Auth Event</Badge>;
+        }
+        
+        return getActionBadge(row.original.action);
+      },
     },
     {
       accessorKey: "tableName",
@@ -227,9 +256,9 @@ export function AuditTable({ data, hidePagination }: AuditTableProps) {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   )
                 })}
@@ -344,7 +373,7 @@ export function AuditTable({ data, hidePagination }: AuditTableProps) {
               {selectedLog && getActionBadge(selectedLog.action)}
             </DialogTitle>
           </DialogHeader>
-          
+
           {selectedLog && (
             <div className="space-y-6 pt-4">
               <div className="grid grid-cols-2 gap-4 text-sm">
@@ -372,7 +401,7 @@ export function AuditTable({ data, hidePagination }: AuditTableProps) {
                     {renderJsonViewer(selectedLog.oldData)}
                   </div>
                 )}
-                
+
                 {(selectedLog.action === "update" || selectedLog.action === "create") && (
                   <div className="space-y-2 w-full">
                     <h4 className="font-semibold text-sm">Data Baru (New Data)</h4>

@@ -10,7 +10,12 @@ import Link from "next/link"
 import { AppSidebar } from "@/components/dashboard/app-sidebar"
 import { SiteHeader } from "@/components/dashboard/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { IconLoader, IconArrowLeft, IconMapPin, IconEdit, IconTrash } from "@tabler/icons-react"
+import { 
+  IconLoader, IconArrowLeft, IconMapPin, IconEdit, IconTrash,
+  IconBed, IconBath, IconRulerMeasure, IconHome, IconCar,
+  IconWind, IconWifi, IconBolt, IconDroplet, IconTrees,
+  IconPool, IconShield, IconCertificate, IconCalendar
+} from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -197,6 +202,98 @@ export default function DetailPropertiPage({ userRole }: DetailPropertiPageProps
                     <h3 className="text-lg font-bold border-b pb-2">Deskripsi</h3>
                     <p className="text-gray-600 whitespace-pre-wrap leading-relaxed">{data.description || "-"}</p>
                   </div>
+
+                  {data.detail && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 mt-6 border-t">
+                      <div className="space-y-4 bg-gray-50/50 p-5 rounded-xl border border-gray-100">
+                        <h4 className="font-bold flex items-center gap-2">
+                          <IconHome className="h-5 w-5 text-gray-500" />
+                          Interior
+                        </h4>
+                        <div className="space-y-3">
+                          {data.detail.bedroomCount != null && (
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-gray-500 flex items-center gap-2"><IconBed className="h-4 w-4" /> Kamar Tidur</span>
+                              <span className="font-semibold">{data.detail.bedroomCount}</span>
+                            </div>
+                          )}
+                          {data.detail.bathroomCount != null && (
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-gray-500 flex items-center gap-2"><IconBath className="h-4 w-4" /> Kamar Mandi</span>
+                              <span className="font-semibold">{data.detail.bathroomCount}</span>
+                            </div>
+                          )}
+                          {data.detail.buildingArea != null && (
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-gray-500 flex items-center gap-2"><IconRulerMeasure className="h-4 w-4" /> Luas Bangunan</span>
+                              <span className="font-semibold">{Number(data.detail.buildingArea).toLocaleString("id-ID")} m²</span>
+                            </div>
+                          )}
+                          {data.detail.electricityCapacity != null && (
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-gray-500 flex items-center gap-2"><IconBolt className="h-4 w-4" /> Listrik</span>
+                              <span className="font-semibold">{data.detail.electricityCapacity} VA</span>
+                            </div>
+                          )}
+                          {data.detail.waterSource && (
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-gray-500 flex items-center gap-2"><IconDroplet className="h-4 w-4" /> Sumber Air</span>
+                              <span className="font-semibold">{data.detail.waterSource}</span>
+                            </div>
+                          )}
+                          <div className="flex flex-wrap gap-2 pt-2">
+                            {data.detail.isFurnished && <Badge variant="secondary" className="font-normal"><IconHome className="w-3 h-3 mr-1"/> Furnished</Badge>}
+                            {data.detail.hasAc && <Badge variant="secondary" className="font-normal"><IconWind className="w-3 h-3 mr-1"/> AC</Badge>}
+                            {data.detail.hasWifi && <Badge variant="secondary" className="font-normal"><IconWifi className="w-3 h-3 mr-1"/> Wi-Fi</Badge>}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4 bg-gray-50/50 p-5 rounded-xl border border-gray-100">
+                        <h4 className="font-bold flex items-center gap-2">
+                          <IconTrees className="h-5 w-5 text-gray-500" />
+                          Eksterior
+                        </h4>
+                        <div className="space-y-3">
+                          {data.detail.landArea != null && (
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-gray-500 flex items-center gap-2"><IconRulerMeasure className="h-4 w-4" /> Luas Tanah</span>
+                              <span className="font-semibold">{Number(data.detail.landArea).toLocaleString("id-ID")} m²</span>
+                            </div>
+                          )}
+                          {data.detail.condition && (
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-gray-500 flex items-center gap-2"><IconHome className="h-4 w-4" /> Kondisi</span>
+                              <span className="font-semibold capitalize">{data.detail.condition}</span>
+                            </div>
+                          )}
+                          {data.detail.certificateType && (
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-gray-500 flex items-center gap-2"><IconCertificate className="h-4 w-4" /> Sertifikat</span>
+                              <span className="font-semibold">{data.detail.certificateType}</span>
+                            </div>
+                          )}
+                          {data.detail.yearBuilt != null && (
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-gray-500 flex items-center gap-2"><IconCalendar className="h-4 w-4" /> Dibangun</span>
+                              <span className="font-semibold">{data.detail.yearBuilt}</span>
+                            </div>
+                          )}
+                          {(data.detail.garageCount != null || data.detail.carportCount != null) && (
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-gray-500 flex items-center gap-2"><IconCar className="h-4 w-4" /> Kendaraan</span>
+                              <span className="font-semibold">Gr: {data.detail.garageCount||0}, Cp: {data.detail.carportCount||0}</span>
+                            </div>
+                          )}
+                          <div className="flex flex-wrap gap-2 pt-2">
+                            {data.detail.hasGarden && <Badge variant="secondary" className="font-normal"><IconTrees className="w-3 h-3 mr-1"/> Taman</Badge>}
+                            {data.detail.hasSwimmingPool && <Badge variant="secondary" className="font-normal"><IconPool className="w-3 h-3 mr-1"/> Kolam</Badge>}
+                            {data.detail.hasSecurity && <Badge variant="secondary" className="font-normal"><IconShield className="w-3 h-3 mr-1"/> Security</Badge>}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 

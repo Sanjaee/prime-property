@@ -18,6 +18,9 @@ import {
   IconArrowDown,
   IconFilter,
   IconX,
+  IconBed,
+  IconBath,
+  IconRulerMeasure,
 } from "@tabler/icons-react"
 import {
   flexRender,
@@ -319,7 +322,35 @@ export function PropertiTable({
     {
       id: "dimensi",
       header: "Dimensi (LxP)",
-      cell: ({ row }) => <div className="whitespace-nowrap">{row.original.lebar} x {row.original.panjang} m</div>,
+      cell: ({ row }) => <div className="whitespace-nowrap text-muted-foreground">{row.original.lebar} x {row.original.panjang} m</div>,
+    },
+    {
+      id: "luas",
+      header: "Luas (T/B)",
+      cell: ({ row }) => {
+        const detail = row.original.detail;
+        if (!detail) return <div className="text-muted-foreground">-</div>;
+        return (
+          <div className="flex flex-col text-xs gap-1">
+            <span className="flex items-center gap-1"><IconRulerMeasure className="h-3 w-3"/> LT: {detail.landArea||"-"} m²</span>
+            <span className="flex items-center gap-1"><IconRulerMeasure className="h-3 w-3"/> LB: {detail.buildingArea||"-"} m²</span>
+          </div>
+        )
+      },
+    },
+    {
+      id: "kamar",
+      header: "Kamar",
+      cell: ({ row }) => {
+        const detail = row.original.detail;
+        if (!detail) return <div className="text-muted-foreground">-</div>;
+        return (
+          <div className="flex flex-col text-xs gap-1">
+            <span className="flex items-center gap-1"><IconBed className="h-3 w-3"/> KT: {detail.bedroomCount||"-"}</span>
+            <span className="flex items-center gap-1"><IconBath className="h-3 w-3"/> KM: {detail.bathroomCount||"-"}</span>
+          </div>
+        )
+      },
     },
     {
       accessorKey: "tingkat",

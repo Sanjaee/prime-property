@@ -54,6 +54,7 @@ export default async function handler(
         imageUrl,
         imageUrls,
         hasCarport: detail?.hasCarport ?? false,
+        detail: detail ?? null,
         hadap,
         kawasan: kawasanArr,
         price: Number(row.priceRupiah || row.price),

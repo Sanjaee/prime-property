@@ -69,14 +69,14 @@ export const LoginForm = ({ defaultCallbackUrl = "/" }: { defaultCallbackUrl?: s
 
       if (result?.ok) {
         toast({
-          title: "✅ Login Berhasil!",
+          title: "Login Berhasil!",
           description: "Selamat datang!",
         });
         router.push(callbackUrl);
       } else {
         // Handle specific errors
         let errorMessage = "Email atau password salah. Silakan coba lagi.";
-        let errorTitle = "❌ Login Gagal";
+        let errorTitle = "Login Gagal";
 
         if (result?.error) {
           const errorStr = typeof result.error === 'string' ? result.error : JSON.stringify(result.error);
@@ -87,13 +87,13 @@ export const LoginForm = ({ defaultCallbackUrl = "/" }: { defaultCallbackUrl?: s
           if (errorStr.includes("registered with Google") ||
             errorStr.includes("Please sign in with Google")) {
             errorMessage = "Email ini sudah terdaftar dengan Google. Silakan gunakan tombol 'Masuk dengan Google' untuk login.";
-            errorTitle = "⚠️ Tipe Akun Tidak Cocok";
+            errorTitle = "Tipe Akun Tidak Cocok";
           } else if (errorStr.includes("User not found")) {
             errorMessage = "Email tidak terdaftar. Silakan periksa kembali email Anda atau daftar akun baru.";
-            errorTitle = "👤 Email Tidak Ditemukan";
+            errorTitle = "Email Tidak Ditemukan";
           } else if (errorStr.includes("Invalid password")) {
             errorMessage = "Email atau password salah. Silakan coba lagi.";
-            errorTitle = "🔒 Login Gagal";
+            errorTitle = "Login Gagal";
           } else if (typeof result.error === 'string' && result.error.trim() !== '') {
             errorMessage = result.error;
           }
@@ -108,7 +108,7 @@ export const LoginForm = ({ defaultCallbackUrl = "/" }: { defaultCallbackUrl?: s
     } catch (error) {
       console.error("Login error:", error);
       toast({
-        title: "❌ Login Gagal",
+        title: "Login Gagal",
         description: "Terjadi kesalahan saat login. Silakan coba lagi.",
         variant: "destructive",
       });
@@ -127,7 +127,7 @@ export const LoginForm = ({ defaultCallbackUrl = "/" }: { defaultCallbackUrl?: s
 
       if (result?.error) {
         let errorMessage = "Terjadi kesalahan saat autentikasi Google. Silakan coba lagi.";
-        let errorTitle = "❌ Google Sign-In Gagal";
+        let errorTitle = "Google Sign-In Gagal";
 
         const errorStr = typeof result.error === 'string' ? result.error : JSON.stringify(result.error);
 
@@ -135,10 +135,10 @@ export const LoginForm = ({ defaultCallbackUrl = "/" }: { defaultCallbackUrl?: s
         if (errorStr.includes("already registered with password") ||
           errorStr === "AccessDenied") {
           errorMessage = "Email ini sudah terdaftar dengan password. Silakan login dengan email dan password.";
-          errorTitle = "⚠️ Email Sudah Terdaftar";
+          errorTitle = "Email Sudah Terdaftar";
         } else if (errorStr.includes("different Google account")) {
           errorMessage = "Email ini sudah terdaftar dengan akun Google yang berbeda.";
-          errorTitle = "⚠️ Email Sudah Terdaftar";
+          errorTitle = "Email Sudah Terdaftar";
         } else if (errorStr === "Configuration") {
           errorMessage = "Terjadi masalah pada konfigurasi server. Silakan hubungi admin.";
         } else if (errorStr === "Verification") {
@@ -172,7 +172,7 @@ export const LoginForm = ({ defaultCallbackUrl = "/" }: { defaultCallbackUrl?: s
       }
 
       toast({
-        title: "❌ Google Sign-In Gagal",
+        title: "Google Sign-In Gagal",
         description: errorMessage,
         variant: "destructive",
       });

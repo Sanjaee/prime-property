@@ -87,6 +87,7 @@ export default async function handler(
           longitude: Number(p.longitude),
           imageUrl: thumbMap.get(p.id) ?? null,
           hasCarport: detailMap.get(p.id)?.hasCarport ?? false,
+          detail: detailMap.get(p.id) ?? null,
           hadap: hadapMap.get(p.id) ?? [],
           kawasan: kawasanArr,
           createdByName: p.createdBy ? userMap.get(p.createdBy) : null,

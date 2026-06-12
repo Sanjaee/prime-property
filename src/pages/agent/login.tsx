@@ -37,7 +37,7 @@ const LoginPage = () => {
       }
 
       toast({
-        title: "❌ Authentication Failed",
+        title: "Authentication Failed",
         description: errorMessage,
         variant: "destructive",
       });
@@ -79,15 +79,15 @@ const LoginPage = () => {
           <h2 className="text-4xl font-bold tracking-tight text-[#C9A961] mb-6">Prime Property</h2>
           
           <p className="text-gray-400 text-lg max-w-md leading-relaxed mb-12">
-            Akses katalog properti real-time, kelola listing secara cerdas, dan monitor performa bisnis Anda dalam satu dashboard terintegrasi.
+            Akses katalog properti dengan mudah, temukan lokasi strategis melalui integrasi peta interaktif, dan kelola listing Anda dalam satu dashboard yang efisien.
           </p>
 
           <div className="space-y-4">
             {[
-              "Katalog properti real-time mendalam",
-              "Manajemen listing instan & akurat",
-              "Sistem filter & pencarian AI-Ready",
-              "Laporan data transparan & tervalidasi"
+              "Katalog properti lengkap & terstruktur",
+              "Pencarian mudah berdasarkan lokasi peta",
+              "Sistem filter detail & akurat",
+              "Manajemen listing instan & transparan"
             ].map((feature, i) => (
               <div key={i} className="flex items-center gap-3 text-gray-300">
                 <CheckCircle2 className="h-5 w-5 text-[#C9A961]" />

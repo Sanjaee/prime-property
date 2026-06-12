@@ -207,13 +207,30 @@ export function PropertiForm({ initialData, onSave, onCancel }: PropertiFormProp
                   <FormField
                     control={form.control}
                     name="priceRupiah"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Harga (Rp)</FormLabel>
-                        <FormControl><Input type="number" {...field} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    render={({ field }) => {
+                      const displayValue = field.value ? field.value.toLocaleString("id-ID") : "";
+                      return (
+                        <FormItem>
+                          <FormLabel>Harga (Rp)</FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="text" 
+                              value={displayValue}
+                              onChange={(e) => {
+                                const rawValue = e.target.value.replace(/\./g, "");
+                                const numValue = Number(rawValue);
+                                if (!isNaN(numValue)) {
+                                  field.onChange(numValue);
+                                } else if (rawValue === "") {
+                                  field.onChange(0);
+                                }
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      );
+                    }}
                   />
                 </div>
               </div>

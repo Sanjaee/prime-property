@@ -35,7 +35,14 @@ import {
   Phone,
   MessageCircle,
   X,
+  Compass,
+  Zap,
+  Droplets,
+  Building,
+  FileText,
+  Calendar,
 } from "lucide-react";
+import { IconBrandWhatsapp } from "@tabler/icons-react";
 import {
   Dialog,
   DialogContent,
@@ -388,11 +395,155 @@ export default function PropertiDetailPage({ data }: { data: PageData | null }) 
                 )}
               </section>
 
+              {/* Interior & Exterior specs */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                {detail && (
+                  <>
+                    <section className="border rounded-lg p-4 space-y-3">
+                      <h3 className="font-semibold">Interior</h3>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        {detail.bedroomCount != null && (
+                          <li className="flex items-center gap-2">
+                            <BedDouble className="size-4 text-gray-500" />
+                            <span className="text-foreground font-medium">Kamar Tidur:</span>{" "}
+                            {detail.bedroomCount}
+                          </li>
+                        )}
+                        {detail.bathroomCount != null && (
+                          <li className="flex items-center gap-2">
+                            <Bath className="size-4 text-gray-500" />
+                            <span className="text-foreground font-medium">Kamar Mandi:</span>{" "}
+                            {detail.bathroomCount}
+                          </li>
+                        )}
+                        {detail.floorCount != null && (
+                          <li className="flex items-center gap-2">
+                            <Building className="size-4 text-gray-500" />
+                            <span className="text-foreground font-medium">Lantai:</span>{" "}
+                            {detail.floorCount}
+                          </li>
+                        )}
+                        {detail.buildingArea != null && (
+                          <li className="flex items-center gap-2">
+                            <Maximize2 className="size-4 text-gray-500" />
+                            <span className="text-foreground font-medium">Luas Bangunan:</span>{" "}
+                            {Number(detail.buildingArea).toLocaleString("id-ID")} m²
+                          </li>
+                        )}
+                        {detail.isFurnished && (
+                          <li className="flex items-center gap-2">
+                            <Home className="size-4 text-gray-500" />
+                            <span className="text-foreground font-medium">Furnished</span>
+                          </li>
+                        )}
+                        {detail.hasAc && (
+                          <li className="flex items-center gap-2">
+                            <Wind className="size-4 text-gray-500" />
+                            <span className="text-foreground font-medium">AC</span>
+                          </li>
+                        )}
+                        {detail.hasWifi && (
+                          <li className="flex items-center gap-2">
+                            <Wifi className="size-4 text-gray-500" />
+                            <span className="text-foreground font-medium">Wi-Fi</span>
+                          </li>
+                        )}
+                        {detail.electricityCapacity != null && (
+                          <li className="flex items-center gap-2">
+                            <Zap className="size-4 text-gray-500" />
+                            <span className="text-foreground font-medium">Daya Listrik:</span>{" "}
+                            {detail.electricityCapacity} VA
+                          </li>
+                        )}
+                        {detail.waterSource && (
+                          <li className="flex items-center gap-2">
+                            <Droplets className="size-4 text-gray-500" />
+                            <span className="text-foreground font-medium">Sumber Air:</span>{" "}
+                            {detail.waterSource}
+                          </li>
+                        )}
+                      </ul>
+                    </section>
+                    <section className="border rounded-lg p-4 space-y-3">
+                      <h3 className="font-semibold">Eksterior</h3>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        {detail.landArea != null && (
+                          <li className="flex items-center gap-2">
+                            <Maximize2 className="size-4 text-gray-500" />
+                            <span className="text-foreground font-medium">Luas Tanah:</span>{" "}
+                            {Number(detail.landArea).toLocaleString("id-ID")} m²
+                          </li>
+                        )}
+                        {detail.hasGarden && (
+                          <li className="flex items-center gap-2">
+                            <TreePine className="size-4 text-gray-500" />
+                            <span className="text-foreground font-medium">Taman</span>
+                          </li>
+                        )}
+                        {detail.hasSwimmingPool && (
+                          <li className="flex items-center gap-2">
+                            <Waves className="size-4 text-gray-500" />
+                            <span className="text-foreground font-medium">Kolam Renang</span>
+                          </li>
+                        )}
+                        {detail.hasSecurity && (
+                          <li className="flex items-center gap-2">
+                            <Shield className="size-4 text-gray-500" />
+                            <span className="text-foreground font-medium">Keamanan 24/7</span>
+                          </li>
+                        )}
+                        {(detail.garageCount != null || detail.carportCount != null) && (
+                          <li className="flex items-center gap-2">
+                            <Car className="size-4 text-gray-500" />
+                            <span className="text-foreground font-medium">Garasi:</span> {detail.garageCount ?? 0}, <span className="text-foreground font-medium ml-1">Carport:</span>{" "}
+                            {detail.carportCount ?? 0}
+                          </li>
+                        )}
+                        {detail.hasParking && (
+                          <li className="flex items-center gap-2">
+                            <ParkingCircle className="size-4 text-gray-500" />
+                            <span className="text-foreground font-medium">Parkir</span>
+                          </li>
+                        )}
+                        {detail.condition && (
+                          <li className="flex items-center gap-2">
+                            <Home className="size-4 text-gray-500" />
+                            <span className="text-foreground font-medium">Kondisi:</span>{" "}
+                            {conditionLabels[detail.condition] ?? detail.condition}
+                          </li>
+                        )}
+                        {detail.certificateType && (
+                          <li className="flex items-center gap-2">
+                            <FileText className="size-4 text-gray-500" />
+                            <span className="text-foreground font-medium">Sertifikat:</span>{" "}
+                            {certLabels[detail.certificateType] ?? detail.certificateType}
+                          </li>
+                        )}
+                        {detail.yearBuilt != null && (
+                          <li className="flex items-center gap-2">
+                            <Calendar className="size-4 text-gray-500" />
+                            <span className="text-foreground font-medium">Tahun Dibangun:</span>{" "}
+                            {detail.yearBuilt}
+                          </li>
+                        )}
+                        {detail.facingDirection && (
+                          <li className="flex items-center gap-2">
+                            <Compass className="size-4 text-gray-500" />
+                            <span className="text-foreground font-medium">Hadap:</span>{" "}
+                            {detail.facingDirection}
+                          </li>
+                        )}
+                      </ul>
+                    </section>
+                  </>
+                )}
+              </div>
+
               {/* Location */}
-              <section>
-                <h2 className="text-lg font-semibold mb-3">Lokasi</h2>
+              <section className="pt-4 border-t">
+                <h2 className="text-lg font-semibold mb-3">Lokasi Peta</h2>
                 <PropertyLocationMap longitude={lng} latitude={lat} />
-                <Button variant="outline" className="mt-2" asChild>
+                <Button variant="outline" className="mt-4" asChild>
                   <a
                     href={`https://www.google.com/maps?q=${lat},${lng}`}
                     target="_blank"
@@ -403,138 +554,6 @@ export default function PropertiDetailPage({ data }: { data: PageData | null }) 
                   </a>
                 </Button>
               </section>
-
-              {/* Interior & Exterior specs */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {detail && (
-                  <>
-                    <section className="border rounded-lg p-4 space-y-3">
-                      <h3 className="font-semibold">Interior</h3>
-                      <ul className="space-y-2 text-sm text-muted-foreground">
-                        {detail.bedroomCount != null && (
-                          <li>
-                            <strong className="text-foreground">Kamar Tidur:</strong>{" "}
-                            {detail.bedroomCount}
-                          </li>
-                        )}
-                        {detail.bathroomCount != null && (
-                          <li>
-                            <strong className="text-foreground">Kamar Mandi:</strong>{" "}
-                            {detail.bathroomCount}
-                          </li>
-                        )}
-                        {detail.floorCount != null && (
-                          <li>
-                            <strong className="text-foreground">Lantai:</strong>{" "}
-                            {detail.floorCount}
-                          </li>
-                        )}
-                        {detail.buildingArea != null && (
-                          <li>
-                            <strong className="text-foreground">Luas Bangunan:</strong>{" "}
-                            {Number(detail.buildingArea).toLocaleString("id-ID")} m²
-                          </li>
-                        )}
-                        {detail.isFurnished && (
-                          <li className="flex items-center gap-1.5">
-                            <span className="text-foreground">Furnished</span>
-                          </li>
-                        )}
-                        {detail.hasAc && (
-                          <li className="flex items-center gap-1.5">
-                            <Wind className="size-3.5" />
-                            AC
-                          </li>
-                        )}
-                        {detail.hasWifi && (
-                          <li className="flex items-center gap-1.5">
-                            <Wifi className="size-3.5" />
-                            Wi-Fi
-                          </li>
-                        )}
-                        {detail.electricityCapacity != null && (
-                          <li>
-                            <strong className="text-foreground">Daya Listrik:</strong>{" "}
-                            {detail.electricityCapacity} VA
-                          </li>
-                        )}
-                        {detail.waterSource && (
-                          <li>
-                            <strong className="text-foreground">Sumber Air:</strong>{" "}
-                            {detail.waterSource}
-                          </li>
-                        )}
-                      </ul>
-                    </section>
-                    <section className="border rounded-lg p-4 space-y-3">
-                      <h3 className="font-semibold">Eksterior</h3>
-                      <ul className="space-y-2 text-sm text-muted-foreground">
-                        {detail.landArea != null && (
-                          <li>
-                            <strong className="text-foreground">Luas Tanah:</strong>{" "}
-                            {Number(detail.landArea).toLocaleString("id-ID")} m²
-                          </li>
-                        )}
-                        {detail.hasGarden && (
-                          <li className="flex items-center gap-1.5">
-                            <TreePine className="size-3.5" />
-                            Taman
-                          </li>
-                        )}
-                        {detail.hasSwimmingPool && (
-                          <li className="flex items-center gap-1.5">
-                            <Waves className="size-3.5" />
-                            Kolam Renang
-                          </li>
-                        )}
-                        {detail.hasSecurity && (
-                          <li className="flex items-center gap-1.5">
-                            <Shield className="size-3.5" />
-                            Keamanan 24/7
-                          </li>
-                        )}
-                        {(detail.garageCount != null || detail.carportCount != null) && (
-                          <li className="flex items-center gap-1.5">
-                            <Car className="size-3.5" />
-                            Garasi: {detail.garageCount ?? 0}, Carport:{" "}
-                            {detail.carportCount ?? 0}
-                          </li>
-                        )}
-                        {detail.hasParking && (
-                          <li className="flex items-center gap-1.5">
-                            <ParkingCircle className="size-3.5" />
-                            Parkir
-                          </li>
-                        )}
-                        {detail.condition && (
-                          <li>
-                            <strong className="text-foreground">Kondisi:</strong>{" "}
-                            {conditionLabels[detail.condition] ?? detail.condition}
-                          </li>
-                        )}
-                        {detail.certificateType && (
-                          <li>
-                            <strong className="text-foreground">Sertifikat:</strong>{" "}
-                            {certLabels[detail.certificateType] ?? detail.certificateType}
-                          </li>
-                        )}
-                        {detail.yearBuilt != null && (
-                          <li>
-                            <strong className="text-foreground">Tahun Dibangun:</strong>{" "}
-                            {detail.yearBuilt}
-                          </li>
-                        )}
-                        {detail.facingDirection && (
-                          <li>
-                            <strong className="text-foreground">Hadap:</strong>{" "}
-                            {detail.facingDirection}
-                          </li>
-                        )}
-                      </ul>
-                    </section>
-                  </>
-                )}
-              </div>
             </div>
 
             {/* Sidebar - Contact */}
@@ -599,10 +618,10 @@ export default function PropertiDetailPage({ data }: { data: PageData | null }) 
                     <div className="flex flex-col gap-3">
                       <Button
                         type="button"
-                        className="w-full h-12 gap-2 bg-prime-gold hover:bg-[#d4af37] text-prime-black font-semibold text-sm rounded-xl transition-all"
+                        className="w-full h-12 gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold text-sm rounded-xl transition-all shadow-sm"
                         onClick={() => openOwnerWhatsApp(p.whatsapp || owner?.phone, p.name, typeof window !== "undefined" ? window.location.href : "")}
                       >
-                        <MessageCircle className="size-4" />
+                        <IconBrandWhatsapp className="size-5" />
                         Hubungi Agent
                       </Button>
                       

@@ -52,9 +52,7 @@ async function seed() {
     await db.delete(properti);
 
     const imageUrls = [
-      "https://navapark.id/site/assets/images/newsEvents/5fbca07f54a2e.jpeg",
-      "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80",
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80"
+      "https://navapark.id/site/assets/images/newsEvents/5fbca07f54a2e.jpeg"
     ];
 
     for (let i = 0; i < 100; i++) {
@@ -93,12 +91,24 @@ async function seed() {
         siap: siap,
         kawasan: JSON.stringify([kawasan]),
         unit: i % 3 === 0 ? "Ready Siap huni" : null,
+        whatsapp: "081234567890",
+        mapsLink: `https://www.google.com/maps?q=${lat},${lng}`,
       }).returning({ id: properti.id });
 
       // Insert detail_properti
       await db.insert(detail_properti).values({
         propertiId: newProp.id,
         hasCarport: Math.random() > 0.2, // 80% chance of having carport
+        landArea: Math.floor(randomInRange(50, 300)).toString(),
+        buildingArea: Math.floor(randomInRange(40, 250)).toString(),
+        bedroomCount: Math.floor(randomInRange(1, 5)),
+        bathroomCount: Math.floor(randomInRange(1, 4)),
+        garageCount: Math.floor(randomInRange(0, 2)),
+        carportCount: Math.floor(randomInRange(0, 2)),
+        condition: "new",
+        certificateType: "SHM",
+        yearBuilt: 2020 + (i % 5),
+        facingDirection: i % 2 === 0 ? "Utara" : "Selatan",
       });
 
       // Insert image

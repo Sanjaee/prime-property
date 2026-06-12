@@ -167,7 +167,18 @@ export default function Home({ properties }: HomeProps) {
           </div>
           <div className="w-full md:w-1/3">
             <label className="text-xs font-semibold text-gray-500 mb-1 block uppercase tracking-wider">Harga Maksimum</label>
-            <Input type="number" placeholder="Rp Tanpa batas" className="bg-prime-gray border-none h-11" value={maxHargaFilter} onChange={(e) => setMaxHargaFilter(e.target.value)} />
+            <Input 
+              type="text" 
+              placeholder="Rp Tanpa batas" 
+              className="bg-prime-gray border-none h-11" 
+              value={maxHargaFilter ? Number(maxHargaFilter).toLocaleString("id-ID") : ""} 
+              onChange={(e) => {
+                const rawValue = e.target.value.replace(/\./g, "");
+                if (!isNaN(Number(rawValue))) {
+                  setMaxHargaFilter(rawValue);
+                }
+              }} 
+            />
           </div>
           <Button onClick={handleSearch} disabled={isSearching} className="w-full md:w-auto h-11 px-8 bg-prime-gold hover:brightness-95 text-prime-black font-semibold shadow-md">
             {isSearching ? "Mencari..." : "Cari Properti"}
