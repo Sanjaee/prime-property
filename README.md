@@ -20,44 +20,44 @@ Web Platform & Internal Agent Portal
   - [x] Menampilkan tagline Prime Property + 1 CTA primer (misal: "Lihat Properti" atau "Hubungi Kami").
   - [x] Background menggunakan warna hitam (#1A1A1A) dengan aksen emas serta logo yang menonjol.
   - [x] Tombol CTA menggunakan warna emas (#C9A961) dengan teks berwarna hitam.
-- [ ] AC-2.2 Section Konten:
+- [x] AC-2.2 Section Konten:
   - [x] Properti Unggulan: Menampilkan maksimal 6 properti highlight bersifat read-only tanpa filter.
-  - [ ] Mengapa Prime Property: Menampilkan 3-4 value proposition lengkap dengan ikon dan deskripsi singkat.
-  - [ ] Footer: Menampilkan logo, kontak singkat (telp/WA/email), serta link menuju halaman About Us & Contact Us.
+  - [x] Mengapa Prime Property: Menampilkan 3-4 value proposition lengkap dengan ikon dan deskripsi singkat.
+  - [x] Footer: Menampilkan logo, kontak singkat (telp/WA/email), serta link menuju halaman About Us & Contact Us.
 - [x] AC-2.3 Navigasi Header:
   - [x] Header bersifat sticky di seluruh halaman publik.
   - [x] Urutan menu dari kiri ke kanan: Logo | Beranda | Tentang Kami | Kontak | tombol Login Agent.
   - [x] Tombol "Login Agent" diposisikan di sebelah kanan menggunakan style outline emas.
 
 ## 3. Halaman About Us
-- [ ] AC-3.1 Konten & Layout:
-  - [ ] Menampilkan profil Prime Property, visi & misi, serta nilai perusahaan dalam Bahasa Indonesia.
-  - [ ] Layout menggunakan sistem 2 kolom pada desktop (teks + visual/quote) dan otomatis menjadi single column pada mobile.
-  - [ ] TIDAK terdapat elemen interaktif kompleks di luar sistem navigasi standar.
+- [x] AC-3.1 Konten & Layout:
+  - [x] Menampilkan profil Prime Property, visi & misi, serta nilai perusahaan dalam Bahasa Indonesia.
+  - [x] Layout menggunakan sistem 2 kolom pada desktop (teks + visual/quote) dan otomatis menjadi single column pada mobile.
+  - [x] TIDAK terdapat elemen interaktif kompleks di luar sistem navigasi standar.
 
 ## 4. Halaman Contact Us
-- [ ] AC-4.1 Informasi Kontak:
-  - [ ] Menampilkan alamat kantor, nomor telepon, email, dan link WhatsApp direct (wa.me/...).
-  - [ ] Embed Google Maps lokasi kantor (opsional, jika koordinat tersedia).
-- [ ] AC-4.2 Form Kontak:
-  - [ ] Menyediakan field: Nama, Email, Nomor HP, dan Pesan.
-  - [ ] Proses submit berhasil mengirimkan email notifikasi ke admin Prime Property.
-  - [ ] Validasi Form: Semua field wajib diisi, email berformat valid, dan nomor HP minimal 10 digit.
-  - [ ] Menampilkan pesan toast sukses: "Pesan terkirim, tim kami akan menghubungi Anda." setelah berhasil dikirim.
-  - [ ] Keamanan anti-spam: Menerapkan rate limit maksimal 3 submit per IP per jam.
+- [x] AC-4.1 Informasi Kontak:
+  - [x] Menampilkan alamat kantor, nomor telepon, email, dan link WhatsApp direct (wa.me/...).
+  - [x] Embed Google Maps lokasi kantor (opsional, jika koordinat tersedia).
+- [x] AC-4.2 Form Kontak:
+  - [x] Menyediakan field: Nama, Email, Nomor HP, dan Pesan.
+  - [x] Proses submit berhasil mengirimkan email notifikasi ke admin Prime Property.
+  - [x] Validasi Form: Semua field wajib diisi, email berformat valid, dan nomor HP minimal 10 digit.
+  - [x] Menampilkan pesan toast sukses: "Pesan terkirim, tim kami akan menghubungi Anda." setelah berhasil dikirim.
+  - [x] Keamanan anti-spam: Menerapkan rate limit maksimal 3 submit per IP per jam.
 
 ## 5. Autentikasi Agent Internal
 - [x] AC-5.1 Halaman Login:
   - [x] Menggunakan route terpisah di /agent/login tanpa link dari navigasi publik.
   - [x] Menyediakan field: Email + Password (atau Email + OTP 6 digit sesuai keputusan implementasi).
-  - [ ] Tidak menyediakan fitur pendaftaran mandiri (self-registration); akun dibuat manual oleh superadmin.
+  - [x] Tidak menyediakan fitur pendaftaran mandiri (self-registration); akun dibuat manual oleh superadmin.
   - [x] Sesi login disimpan di httpOnly cookie, SameSite=Lax, dengan masa berlaku 30 hari.
   - [x] Sistem lockout sementara selama 15 menit apabila terjadi 5x kegagalan login dalam kurun waktu 30 menit.
 - [x] AC-5.2 Role & Authorization:
   - [x] Role Admin: Hanya bisa View listing, menggunakan Filter & search, serta melihat detail properti. TIDAK BISA melakukan Create, Update, dan Delete properti.
-  - [ ] Role Superadmin: Memiliki akses Full CRUD properti, membuat akun admin baru, mengaktifkan/menonaktifkan akun admin, reset password admin, mengakses seluruh fitur admin, serta melihat audit log perubahan.
+  - [x] Role Superadmin: Memiliki akses Full CRUD properti, membuat akun admin baru, mengaktifkan/menonaktifkan akun admin, reset password admin, mengakses seluruh fitur admin, serta melihat audit log perubahan.
   - [x] Keamanan Backend: Otorisasi WAJIB divalidasi langsung di backend untuk setiap endpoint, bukan hanya menyembunyikan elemen UI di frontend.
-  - [ ] Endpoint mutasi harus merespons dengan 403 Forbidden jika diakses oleh akun dengan role Admin.
+  - [x] Endpoint mutasi harus merespons dengan 403 Forbidden jika diakses oleh akun dengan role Admin.
 - [x] AC-5.3 Logout:
   - [x] Tombol logout tersedia pada dropdown profil di header dashboard internal.
   - [x] Proses logout akan menghapus session cookie dan melakukan redirect kembali ke /agent/login.
@@ -83,61 +83,61 @@ Setiap listing properti wajib memiliki struktur data sebagai berikut:
 - [x] created_by (Tipe: FK User): Menyimpan data Superadmin yang membuat entry tersebut.
 
 ## 7. Dashboard Internal
-- [ ] AC-7.1 Tampilan Tabel Listing:
-  - [ ] Menampilkan tabel kompak berisi kolom: Nama, Group, Lebar x Panjang, Hadap, Tipe, Tingkat, Harga, Carport, Status, Siap, Kawasan.
-  - [ ] Pagination: Menyediakan opsi 25/50/100 baris per halaman, dengan nilai default 50.
-  - [ ] Fitur Sort: Dapat diurutkan berdasarkan nama, harga (asc/desc), tanggal dibuat, dan status.
-  - [ ] Badge Status Warna:
-    - [ ] In Stock menggunakan badge warna hijau muda.
-    - [ ] Sold Out menggunakan badge warna merah (#B33A3A).
-    - [ ] Siap Huni menggunakan badge warna kuning/emas.
-    - [ ] Siap Kosong menggunakan badge warna ungu muda.
-  - [ ] Mengklik baris data akan membuka panel detail di samping (drawer) atau mengarah ke halaman detail terpisah.
-- [ ] AC-7.2 Filter & Pencarian:
-  - [ ] Sistem Filter:
-    - [ ] Kawasan: menggunakan dropdown multi-select.
-    - [ ] Lebar min (m): menggunakan input numerik.
-    - [ ] Hadap: menggunakan multi-select (Utara, Selatan, Timur, Barat).
-    - [ ] Harga Max: menggunakan input numerik berformat rupiah (slider bersifat opsional).
-    - [ ] Tipe: menggunakan komponen radio button (Semua / Ruko / Villa).
-    - [ ] Status: menggunakan komponen radio button (Semua / In Stock / Sold Out).
-    - [ ] Siap: menggunakan multi-select (Siap Huni, Siap Kosong, Siap Huni Renovasi).
-    - [ ] Carport: menggunakan komponen toggle (Ya / Tidak / Semua).
-  - [ ] Search Bar: Berupa input free-text di atas tabel untuk mencari data berdasarkan nama_property + group + kawasan.
-  - [ ] Filter diaplikasikan secara real-time menggunakan teknik debounce 300ms.
-  - [ ] Filter yang aktif ditampilkan sebagai komponen chip di atas tabel dan dapat dihapus satu per satu.
-  - [ ] Menyediakan tombol "Reset Filter" untuk mengembalikan tabel ke state default.
-  - [ ] Mengintegrasikan URL query params untuk menyimpan state filter agar link bersifat shareable.
-- [ ] AC-7.3 Halaman Detail Properti:
-  - [ ] Menampilkan seluruh data field properti secara ringkas dalam layout 2 kolom.
-  - [ ] Jika link Google Maps tersedia, tampilkan tombol "Buka di Google Maps" yang akan terbuka di tab baru.
-  - [ ] Tombol "Edit" dan "Hapus" diletakkan di pojok kanan atas hanya jika diakses oleh Superadmin.
-  - [ ] Tombol Edit/Hapus WAJIB tidak muncul jika diakses oleh Admin.
+- [x] AC-7.1 Tampilan Tabel Listing:
+  - [x] Menampilkan tabel kompak berisi kolom: Nama, Group, Lebar x Panjang, Hadap, Tipe, Tingkat, Harga, Carport, Status, Siap, Kawasan.
+  - [x] Pagination: Menyediakan opsi 25/50/100 baris per halaman, dengan nilai default 50.
+  - [x] Fitur Sort: Dapat diurutkan berdasarkan nama, harga (asc/desc), tanggal dibuat, dan status.
+  - [x] Badge Status Warna:
+    - [x] In Stock menggunakan badge warna hijau muda.
+    - [x] Sold Out menggunakan badge warna merah (#B33A3A).
+    - [x] Siap Huni menggunakan badge warna kuning/emas.
+    - [x] Siap Kosong menggunakan badge warna ungu muda.
+  - [x] Mengklik baris data akan membuka panel detail di samping (drawer) atau mengarah ke halaman detail terpisah.
+- [x] AC-7.2 Filter & Pencarian:
+  - [x] Sistem Filter:
+    - [x] Kawasan: menggunakan dropdown multi-select.
+    - [x] Lebar min (m): menggunakan input numerik.
+    - [x] Hadap: menggunakan multi-select (Utara, Selatan, Timur, Barat).
+    - [x] Harga Max: menggunakan input numerik berformat rupiah (slider bersifat opsional).
+    - [x] Tipe: menggunakan komponen radio button (Semua / Ruko / Villa).
+    - [x] Status: menggunakan komponen radio button (Semua / In Stock / Sold Out).
+    - [x] Siap: menggunakan multi-select (Siap Huni, Siap Kosong, Siap Huni Renovasi).
+    - [x] Carport: menggunakan komponen toggle (Ya / Tidak / Semua).
+  - [x] Search Bar: Berupa input free-text di atas tabel untuk mencari data berdasarkan nama_property + group + kawasan.
+  - [x] Filter diaplikasikan secara real-time menggunakan teknik debounce 300ms.
+  - [x] Filter yang aktif ditampilkan sebagai komponen chip di atas tabel dan dapat dihapus satu per satu.
+  - [x] Menyediakan tombol "Reset Filter" untuk mengembalikan tabel ke state default.
+  - [x] Mengintegrasikan URL query params untuk menyimpan state filter agar link bersifat shareable.
+- [x] AC-7.3 Halaman Detail Properti:
+  - [x] Menampilkan seluruh data field properti secara ringkas dalam layout 2 kolom.
+  - [x] Jika link Google Maps tersedia, tampilkan tombol "Buka di Google Maps" yang akan terbuka di tab baru.
+  - [x] Tombol "Edit" dan "Hapus" diletakkan di pojok kanan atas hanya jika diakses oleh Superadmin.
+  - [x] Tombol Edit/Hapus WAJIB tidak muncul jika diakses oleh Admin.
 
 ## 8. Property Management - CRUD (Hanya Superadmin)
-- [ ] AC-8.1 Create Properti:
-  - [ ] Tombol "+ Tambah Properti" hanya tampil di halaman listing untuk akun ber-role Superadmin.
-  - [ ] Form input mencakup seluruh field data properti (AC-6.1) dengan struktur layout grid 2 kolom.
-  - [ ] Menerapkan validasi client-side (untuk feedback instan) DAN validasi server-side (untuk keamanan).
-  - [ ] Setelah berhasil tersimpan: Muncul toast notification dan me-redirect pengguna ke halaman listing dengan posisi entry baru yang ditandai/highlight.
-  - [ ] Menyediakan opsi tombol "Simpan & Tambah Lagi" untuk mempermudah input berturut-turut (opsional).
-- [ ] AC-8.2 Update Properti:
-  - [ ] Menggunakan form edit dengan layout yang sama seperti form create, dengan seluruh field sudah terisi data sebelumnya (pre-filled).
-  - [ ] Field yang mengalami perubahan ditandai dengan dirty state indicator.
-  - [ ] Menyediakan tombol "Batal" untuk kembali ke halaman detail tanpa menyimpan perubahan data.
-  - [ ] Setiap perubahan data wajib dicatat ke dalam sistem audit log (mencakup data who, when, what changed).
-- [ ] AC-8.3 Delete Properti:
-  - [ ] Menampilkan modal konfirmasi saat tombol "Hapus" diklik dengan pesan teks: "Yakin hapus properti [nama]? Tindakan ini tidak dapat dibatalkan.".
-  - [ ] Mekanisme penghapusan menggunakan soft delete (mengisi timestamp pada field deleted_at), bukan menghapus permanen (hard delete) dari database.
-  - [ ] Properti yang telah dihapus otomatis tidak akan muncul pada listing publik maupun default view internal.
-  - [ ] Superadmin dapat melihat & mengembalikan (restore) data yang terhapus melalui menu "Arsip" (opsional untuk Phase 2).
-- [ ] AC-8.4 Validasi Form:
-  - [ ] nama_property: Minimum berisi 3 karakter dan maksimum 100 karakter.
-  - [ ] lebar & panjang: Nilai harus >0 dengan maksimal 2 angka di belakang desimal.
-  - [ ] price: Nilai harus >0 dalam format integer rupiah penuh.
-  - [ ] tingkat: Rentang nilai antara 1-10 dengan maksimal 1 angka di belakang desimal.
-  - [ ] maps_link: Harus berupa format URL valid yang mengandung domain http://googleusercontent.com/ atau maps.google.com/.
-  - [ ] Pesan kesalahan (error) harus ditampilkan secara inline tepat di bawah field terkait menggunakan warna merah (#B33A3A).
+- [x] AC-8.1 Create Properti:
+  - [x] Tombol "+ Tambah Properti" hanya tampil di halaman listing untuk akun ber-role Superadmin.
+  - [x] Form input mencakup seluruh field data properti (AC-6.1) dengan struktur layout grid 2 kolom.
+  - [x] Menerapkan validasi client-side (untuk feedback instan) DAN validasi server-side (untuk keamanan).
+  - [x] Setelah berhasil tersimpan: Muncul toast notification dan me-redirect pengguna ke halaman listing dengan posisi entry baru yang ditandai/highlight.
+  - [x] Menyediakan opsi tombol "Simpan & Tambah Lagi" untuk mempermudah input berturut-turut (opsional).
+- [x] AC-8.2 Update Properti:
+  - [x] Menggunakan form edit dengan layout yang sama seperti form create, dengan seluruh field sudah terisi data sebelumnya (pre-filled).
+  - [x] Field yang mengalami perubahan ditandai dengan dirty state indicator.
+  - [x] Menyediakan tombol "Batal" untuk kembali ke halaman detail tanpa menyimpan perubahan data.
+  - [x] Setiap perubahan data wajib dicatat ke dalam sistem audit log (mencakup data who, when, what changed).
+- [x] AC-8.3 Delete Properti:
+  - [x] Menampilkan modal konfirmasi saat tombol "Hapus" diklik dengan pesan teks: "Yakin hapus properti [nama]? Tindakan ini tidak dapat dibatalkan.".
+  - [x] Mekanisme penghapusan menggunakan soft delete (mengisi timestamp pada field deleted_at), bukan menghapus permanen (hard delete) dari database.
+  - [x] Properti yang telah dihapus otomatis tidak akan muncul pada listing publik maupun default view internal.
+  - [x] Superadmin dapat melihat & mengembalikan (restore) data yang terhapus melalui menu "Arsip" (opsional untuk Phase 2).
+- [x] AC-8.4 Validasi Form:
+  - [x] nama_property: Minimum berisi 3 karakter dan maksimum 100 karakter.
+  - [x] lebar & panjang: Nilai harus >0 dengan maksimal 2 angka di belakang desimal.
+  - [x] price: Nilai harus >0 dalam format integer rupiah penuh.
+  - [x] tingkat: Rentang nilai antara 1-10 dengan maksimal 1 angka di belakang desimal.
+  - [x] maps_link: Harus berupa format URL valid yang mengandung domain http://googleusercontent.com/ atau maps.google.com/.
+  - [x] Pesan kesalahan (error) harus ditampilkan secara inline tepat di bawah field terkait menggunakan warna merah (#B33A3A).
 
 ## 9. Non-Functional Requirements
 - [ ] AC-9.1 Performance:

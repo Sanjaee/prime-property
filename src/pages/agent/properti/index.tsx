@@ -48,6 +48,10 @@ export default function PropertiPage({ userRole }: PropertiPageProps) {
     router.push(`/agent/properti/edit/${item.id}`)
   }
 
+  const handleDetail = (item: any) => {
+    router.push(`/agent/properti/detail/${item.id}`)
+  }
+
   const handleDelete = async (id: string) => {
     try {
       const res = await fetch(`/api/properti/${id}`, { method: "DELETE" })
@@ -88,6 +92,7 @@ export default function PropertiPage({ userRole }: PropertiPageProps) {
                 onAdd={handleAdd}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
+                onRowClick={handleDetail}
               />
             )}
           </div>
