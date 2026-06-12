@@ -64,6 +64,7 @@ export function PropertiForm({ initialData, onSave, onCancel }: PropertiFormProp
 
   const form = useForm<PropertiFormValues>({
     resolver: zodResolver(propertiSchema) as any,
+    shouldFocusError: false,
     defaultValues: {
       name: "",
       group: "",
@@ -113,6 +114,17 @@ export function PropertiForm({ initialData, onSave, onCancel }: PropertiFormProp
   const onError = (errors: any) => {
     console.error("Form validation errors:", errors)
     toast.error("Gagal menyimpan: Harap periksa kembali isian form yang berwarna merah.")
+
+    const firstErrorKey = Object.keys(errors)[0]
+    if (firstErrorKey && typeof document !== "undefined") {
+      const LOCATION_FIELDS = ["address", "province", "city", "district", "latitude", "longitude"]
+      const id = LOCATION_FIELDS.includes(firstErrorKey) ? "field-address" : firstErrorKey
+      
+      const el = document.getElementById(id) || document.querySelector(`[name="${firstErrorKey}"]`)
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" })
+      }
+    }
   }
 
   return (
@@ -436,7 +448,7 @@ export function PropertiForm({ initialData, onSave, onCancel }: PropertiFormProp
               </div>
 
               {/* Lokasi */}
-              <div className="col-span-2 space-y-4 pt-4 border-t">
+              <div id="field-address" className="col-span-2 space-y-4 pt-4 border-t">
                 <h3 className="text-lg font-medium border-b pb-2">Lokasi</h3>
                 
                 <FormField

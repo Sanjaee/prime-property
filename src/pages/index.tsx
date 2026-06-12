@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { db } from "@/db";
 import { properti, properti_images, detail_properti } from "@/db/schema";
-import { desc, eq, inArray, and, isNull } from "drizzle-orm";
+import { desc, eq, inArray, and, isNull, sql } from "drizzle-orm";
 import type { InferSelectModel } from "drizzle-orm";
 import { motion } from "framer-motion";
 import { MapPin, Phone, MessageCircle, Mail, Maximize2, Minimize2 } from "lucide-react";
@@ -46,10 +46,11 @@ const geistMono = Geist_Mono({
 type Properti = InferSelectModel<typeof properti>;
 
 interface HomeProps {
+  totalCount: number;
   properties: (Properti & { imageUrl: string | null; hasCarport: boolean })[];
 }
 
-export default function Home({ properties }: HomeProps) {
+export default function Home({ properties, totalCount }: HomeProps) {
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [kawasanFilter, setKawasanFilter] = useState("all");
   const [tipeFilter, setTipeFilter] = useState("all");
@@ -222,7 +223,7 @@ export default function Home({ properties }: HomeProps) {
             </div>
             <Button variant="outline" className="border-gray-300 text-prime-black hover:bg-prime-gray" asChild>
               <Link href="/properti">
-                Lihat Semua (60) →
+                Lihat Semua ({totalCount}) →
               </Link>
             </Button>
           </div>
@@ -405,6 +406,12 @@ export default function Home({ properties }: HomeProps) {
 
 export async function getServerSideProps() {
   try {
+    const totalCountResult = await db.select({ count: sql<number>`count(*)` })
+      .from(properti)
+      .where(and(eq(properti.status, "active"), isNull(properti.deletedAt)));
+      
+    const totalCount = Number(totalCountResult[0]?.count || 0);
+
     const data = await db.query.properti.findMany({
       limit: 6,
       orderBy: [desc(properti.createdAt)],
@@ -458,6 +465,7 @@ export async function getServerSideProps() {
 
     return {
       props: {
+        totalCount,
         properties: JSON.parse(
           JSON.stringify(propertiesWithImages, (key, value) =>
             typeof value === "bigint" ? value.toString() : value
