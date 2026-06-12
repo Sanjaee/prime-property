@@ -511,34 +511,35 @@ export function PropertiTable({
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 lg:px-6 gap-4">
         <h2 className="text-2xl font-bold tracking-tight">Listing Properti</h2>
         {userRole === "superadmin" && (
-          <Button size="sm" onClick={onAdd} className="bg-[#C9A961] hover:brightness-95 text-[#1A1A1A] font-bold shadow-md">
+          <Button size="sm" onClick={onAdd} className="w-full sm:w-auto bg-[#C9A961] hover:brightness-95 text-[#1A1A1A] font-bold shadow-md">
             <IconPlus className="mr-2 h-4 w-4" /> Tambah Properti
           </Button>
         )}
       </div>
 
       <div className="px-4 lg:px-6 flex flex-col gap-4">
-        <div className="flex flex-col sm:flex-row items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full">
           <Input
             placeholder="Cari nama, group, atau kawasan..."
             value={globalSearch}
             onChange={(e) => setGlobalSearch(e.target.value)}
             className="w-full sm:max-w-md h-10"
           />
-          <Button 
-            variant="outline" 
-            className={`h-10 ${isFilterOpen ? 'bg-muted' : ''}`}
-            onClick={() => setIsFilterOpen(!isFilterOpen)}
-          >
-            <IconFilter className="mr-2 h-4 w-4" /> Filter Lanjutan
-          </Button>
-          
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="h-10 ml-auto">
-                <IconLayoutColumns className="mr-2 h-4 w-4" /> Kolom
-              </Button>
-            </DropdownMenuTrigger>
+          <div className="flex items-center gap-2 w-full sm:w-auto sm:ml-auto">
+            <Button 
+              variant="outline" 
+              className={`h-10 flex-1 sm:flex-none ${isFilterOpen ? 'bg-muted' : ''}`}
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+            >
+              <IconFilter className="mr-2 h-4 w-4" /> Filter Lanjutan
+            </Button>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="h-10 flex-1 sm:flex-none">
+                  <IconLayoutColumns className="mr-2 h-4 w-4" /> Kolom
+                </Button>
+              </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-[200px]">
               {table
                 .getAllColumns()
@@ -563,6 +564,7 @@ export function PropertiTable({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
+          </div>
         </div>
 
         {/* Filter Panel */}
@@ -638,10 +640,15 @@ export function PropertiTable({
             <div className="space-y-2">
               <Label className="text-xs font-semibold text-muted-foreground uppercase">Max Harga</Label>
               <Input 
-                type="number"
+                type="text"
                 placeholder="Rp Tanpa batas" 
-                value={filterHargaMax}
-                onChange={e => setFilterHargaMax(e.target.value)}
+                value={filterHargaMax ? Number(filterHargaMax).toLocaleString("id-ID") : ""}
+                onChange={e => {
+                  const rawValue = e.target.value.replace(/\./g, "");
+                  if (!isNaN(Number(rawValue))) {
+                    setFilterHargaMax(rawValue);
+                  }
+                }}
                 className="h-9 bg-white"
               />
             </div>

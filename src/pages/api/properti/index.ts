@@ -163,10 +163,18 @@ export default async function handler(
         })
         .returning();
 
-      // Insert Detail Properti for Carport
+      // Insert Detail Properti
       await db.insert(detail_properti).values({
         propertiId: inserted.id,
         hasCarport: validatedData.hasCarport,
+        bedroomCount: validatedData.bedroomCount ?? null,
+        bathroomCount: validatedData.bathroomCount ?? null,
+        buildingArea: validatedData.buildingArea ? String(validatedData.buildingArea) : null,
+        landArea: validatedData.landArea ? String(validatedData.landArea) : null,
+        garageCount: validatedData.garageCount ?? null,
+        condition: validatedData.condition ?? null,
+        certificateType: validatedData.certificateType ?? null,
+        yearBuilt: validatedData.yearBuilt ?? null,
       });
 
       // Insert Hadap

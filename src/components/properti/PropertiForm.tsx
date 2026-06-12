@@ -100,6 +100,7 @@ export function PropertiForm({ initialData, onSave, onCancel }: PropertiFormProp
     if (initialData) {
       form.reset({
         ...initialData,
+        ...(initialData.detail || {}),
         priceRupiah: Number(initialData.priceRupiah || initialData.price),
       })
     }
@@ -362,6 +363,71 @@ export function PropertiForm({ initialData, onSave, onCancel }: PropertiFormProp
                             )
                           })}
                         </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              {/* Interior & Eksterior */}
+              <div className="col-span-2 space-y-4 pt-4 border-t">
+                <h3 className="text-lg font-medium border-b pb-2">Interior & Eksterior</h3>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <FormField control={form.control} name="bedroomCount" render={({ field }) => (
+                    <FormItem><FormLabel>Kamar Tidur</FormLabel><FormControl><Input type="number" {...field} value={field.value ?? ""} onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)} /></FormControl><FormMessage /></FormItem>
+                  )} />
+                  <FormField control={form.control} name="bathroomCount" render={({ field }) => (
+                    <FormItem><FormLabel>Kamar Mandi</FormLabel><FormControl><Input type="number" {...field} value={field.value ?? ""} onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)} /></FormControl><FormMessage /></FormItem>
+                  )} />
+                  <FormField control={form.control} name="buildingArea" render={({ field }) => (
+                    <FormItem><FormLabel>Luas Bang. (m²)</FormLabel><FormControl><Input type="number" step="0.1" {...field} value={field.value ?? ""} onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)} /></FormControl><FormMessage /></FormItem>
+                  )} />
+                  <FormField control={form.control} name="landArea" render={({ field }) => (
+                    <FormItem><FormLabel>Luas Tanah (m²)</FormLabel><FormControl><Input type="number" step="0.1" {...field} value={field.value ?? ""} onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)} /></FormControl><FormMessage /></FormItem>
+                  )} />
+                  <FormField control={form.control} name="garageCount" render={({ field }) => (
+                    <FormItem><FormLabel>Garasi</FormLabel><FormControl><Input type="number" {...field} value={field.value ?? ""} onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)} /></FormControl><FormMessage /></FormItem>
+                  )} />
+                  <FormField control={form.control} name="yearBuilt" render={({ field }) => (
+                    <FormItem><FormLabel>Tahun Dibangun</FormLabel><FormControl><Input type="number" {...field} value={field.value ?? ""} onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)} /></FormControl><FormMessage /></FormItem>
+                  )} />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                  <FormField
+                    control={form.control}
+                    name="condition"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Kondisi</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value || undefined}>
+                          <FormControl><SelectTrigger className="w-full"><SelectValue placeholder="Pilih Kondisi" /></SelectTrigger></FormControl>
+                          <SelectContent>
+                            <SelectItem value="new">Baru</SelectItem>
+                            <SelectItem value="used">Bekas</SelectItem>
+                            <SelectItem value="renovated">Renovasi</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="certificateType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Sertifikat</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value || undefined}>
+                          <FormControl><SelectTrigger className="w-full"><SelectValue placeholder="Pilih Sertifikat" /></SelectTrigger></FormControl>
+                          <SelectContent>
+                            <SelectItem value="SHM">SHM</SelectItem>
+                            <SelectItem value="HGB">HGB</SelectItem>
+                            <SelectItem value="SHSRS">SHSRS</SelectItem>
+                            <SelectItem value="girik">Girik</SelectItem>
+                            <SelectItem value="other">Lainnya</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}

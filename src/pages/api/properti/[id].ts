@@ -136,11 +136,23 @@ export default async function handler(
         .where(eq(properti.id, id))
         .returning();
 
-      // Update Carport
+      // Update Detail Properti
+      const detailPayload = {
+        hasCarport: validatedData.hasCarport,
+        bedroomCount: validatedData.bedroomCount ?? null,
+        bathroomCount: validatedData.bathroomCount ?? null,
+        buildingArea: validatedData.buildingArea ? String(validatedData.buildingArea) : null,
+        landArea: validatedData.landArea ? String(validatedData.landArea) : null,
+        garageCount: validatedData.garageCount ?? null,
+        condition: validatedData.condition ?? null,
+        certificateType: validatedData.certificateType ?? null,
+        yearBuilt: validatedData.yearBuilt ?? null,
+      };
+
       if (existingDetail) {
-        await db.update(detail_properti).set({ hasCarport: validatedData.hasCarport }).where(eq(detail_properti.propertiId, id));
+        await db.update(detail_properti).set(detailPayload).where(eq(detail_properti.propertiId, id));
       } else {
-        await db.insert(detail_properti).values({ propertiId: id, hasCarport: validatedData.hasCarport });
+        await db.insert(detail_properti).values({ propertiId: id, ...detailPayload });
       }
 
       // Update Hadap

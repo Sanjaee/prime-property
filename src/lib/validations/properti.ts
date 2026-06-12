@@ -25,6 +25,15 @@ export const propertiSchema = z.object({
   kawasan: z.array(z.string()).min(1, "Minimal isi 1 kawasan"),
   unit: z.string().optional().nullable(),
   
+  bedroomCount: z.coerce.number().min(0).optional().nullable(),
+  bathroomCount: z.coerce.number().min(0).optional().nullable(),
+  buildingArea: z.coerce.number().min(0).optional().nullable(),
+  landArea: z.coerce.number().min(0).optional().nullable(),
+  garageCount: z.coerce.number().min(0).optional().nullable(),
+  condition: z.enum(["new", "used", "renovated"]).optional().nullable(),
+  certificateType: z.enum(["SHM", "HGB", "SHSRS", "girik", "other"]).optional().nullable(),
+  yearBuilt: z.coerce.number().min(1800).max(new Date().getFullYear() + 5).optional().nullable(),
+  
   description: z.string().min(10, "Deskripsi minimal 10 karakter"),
   address: z.string().min(5, "Alamat minimal 5 karakter"),
   province: z.string().min(3, "Provinsi minimal 3 karakter"),
