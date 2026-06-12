@@ -413,7 +413,7 @@ export function PropertiTable({
                 <AlertDialogHeader>
                   <AlertDialogTitle>Apakah Anda yakin?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Tindakan ini tidak dapat dibatalkan. Properti <strong>{row.original.name}</strong> akan dihapus permanen.
+                    Yakin hapus properti <strong>{row.original.name}</strong>? Tindakan ini tidak dapat dibatalkan.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -704,7 +704,7 @@ export function PropertiTable({
               ) : (
                 <TableRow>
                   <TableCell colSpan={columns.length} className="h-24 text-center">
-                    No results.
+                    Tidak ada data ditemukan.
                   </TableCell>
                 </TableRow>
               )}
@@ -714,13 +714,13 @@ export function PropertiTable({
 
         <div className="flex items-center justify-between px-2">
           <div className="hidden flex-1 text-sm text-muted-foreground lg:flex">
-            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
+            {table.getFilteredSelectedRowModel().rows.length} dari{" "}
+            {table.getFilteredRowModel().rows.length} baris terpilih.
           </div>
           <div className="flex w-full items-center gap-8 lg:w-fit">
             <div className="hidden items-center gap-2 lg:flex">
               <Label htmlFor="rows-per-page" className="text-sm font-medium">
-                Rows per page
+                Baris per halaman
               </Label>
               <Select
                 value={`${table.getState().pagination.pageSize}`}
@@ -739,7 +739,7 @@ export function PropertiTable({
               </Select>
             </div>
             <div className="flex w-fit items-center justify-center text-sm font-medium">
-              Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount() || 1}
+              Halaman {table.getState().pagination.pageIndex + 1} dari {table.getPageCount() || 1}
             </div>
             <div className="ml-auto flex items-center gap-2 lg:ml-0">
               <Button

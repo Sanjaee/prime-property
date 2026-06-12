@@ -145,7 +145,7 @@ export function AuditTable({ data, hidePagination }: AuditTableProps) {
       header: ({ column }) => <SortableHeader column={column} title="Waktu" />,
       cell: ({ row }) => (
         <div className="whitespace-nowrap font-medium text-sm">
-          {format(new Date(row.original.createdAt), "dd MMM yyyy, HH:mm", { locale: localeId })}
+          {format(new Date(row.original.createdAt), "dd MMMM yyyy, HH:mm", { locale: localeId })} WIB
         </div>
       ),
       filterFn: "includesString",
@@ -265,12 +265,12 @@ export function AuditTable({ data, hidePagination }: AuditTableProps) {
       {!hidePagination && table.getPageCount() > 1 && (
         <div className="flex items-center justify-between px-2 pt-2">
           <div className="hidden flex-1 text-sm text-muted-foreground lg:flex">
-            Total {table.getFilteredRowModel().rows.length} record(s).
+            Total {table.getFilteredRowModel().rows.length} baris data.
           </div>
           <div className="flex w-full items-center gap-8 lg:w-fit">
             <div className="hidden items-center gap-2 lg:flex">
               <Label htmlFor="rows-per-page" className="text-sm font-medium">
-                Rows per page
+                Baris per halaman
               </Label>
               <Select
                 value={`${table.getState().pagination.pageSize}`}
@@ -289,7 +289,7 @@ export function AuditTable({ data, hidePagination }: AuditTableProps) {
               </Select>
             </div>
             <div className="flex w-fit items-center justify-center text-sm font-medium">
-              Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount() || 1}
+              Halaman {table.getState().pagination.pageIndex + 1} dari {table.getPageCount() || 1}
             </div>
             <div className="ml-auto flex items-center gap-2 lg:ml-0">
               <Button

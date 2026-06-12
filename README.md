@@ -140,25 +140,25 @@ Setiap listing properti wajib memiliki struktur data sebagai berikut:
   - [x] Pesan kesalahan (error) harus ditampilkan secara inline tepat di bawah field terkait menggunakan warna merah (#B33A3A).
 
 ## 9. Non-Functional Requirements
-- [ ] AC-9.1 Performance:
-  - [ ] Nilai Time to First Contentful Paint (FCP) < 1.5 detik pada jaringan seluler 4G.
-  - [ ] Waktu respons fitur filter & pencarian < 500 milidetik untuk jumlah dataset hingga 1000 properti.
-  - [ ] Skor performa Google Lighthouse ≥ 85 untuk halaman utama/landing page.
+- [x] AC-9.1 Performance:
+  - [x] Nilai Time to First Contentful Paint (FCP) < 1.5 detik pada jaringan seluler 4G.
+  - [x] Waktu respons fitur filter & pencarian < 500 milidetik untuk jumlah dataset hingga 1000 properti.
+  - [x] Skor performa Google Lighthouse ≥ 85 untuk halaman utama/landing page.
 - [x] AC-9.2 Security:
   - [x] Melindungi seluruh endpoint internal dengan komponen authentication middleware.
   - [x] Menerapkan sistem CSRF protection untuk seluruh operasi mutasi data (POST, PUT, PATCH, DELETE).
-  - [ ] Batasan akses (Rate Limiting): Maksimal 100 req/menit/IP secara global, dan maksimal 10 req/menit/IP khusus untuk endpoint otentikasi.
+  - [x] Batasan akses (Rate Limiting): Maksimal 100 req/menit/IP secara global, dan maksimal 10 req/menit/IP khusus untuk endpoint otentikasi.
   - [x] Melakukan proses hashing password menggunakan algoritma bcrypt dengan parameter cost factor ≥ 10.
-  - [ ] Wajib menggunakan protokol HTTPS penuh di lingkungan production dengan mengaktifkan flag secure cookie.
-  - [ ] Menerapkan teknik input sanitization secara ketat untuk mencegah celah keamanan XSS & SQL Injection.
-- [ ] AC-9.3 Bahasa & Lokalisasi:
-  - [ ] Seluruh antarmuka pengguna (UI) wajib menggunakan Bahasa Indonesia.
-  - [ ] Format mata uang ditulis menggunakan gaya Indonesia, contoh: Rp 1.350.000.000 (titik sebagai separator ribuan).
-  - [ ] Format penulisan tanggal menggunakan struktur: 24 Mei 2026 atau format numerik 24/05/2026.
-  - [ ] Seluruh tampilan timestamp wajib menggunakan zona waktu Asia/Jakarta (WIB).
-- [ ] AC-9.4 Browser Support:
-  - [ ] Kompatibel dengan browser Chrome / Edge / Firefox / Safari versi rilis 2 tahun terakhir.
-  - [ ] Mendukung penuh Mobile Safari iOS 14+ serta Chrome untuk platform Android.
+  - [x] Wajib menggunakan protokol HTTPS penuh di lingkungan production dengan mengaktifkan flag secure cookie.
+  - [x] Menerapkan teknik input sanitization secara ketat untuk mencegah celah keamanan XSS & SQL Injection.
+- [x] AC-9.3 Bahasa & Lokalisasi:
+  - [x] Seluruh antarmuka pengguna (UI) wajib menggunakan Bahasa Indonesia.
+  - [x] Format mata uang ditulis menggunakan gaya Indonesia, contoh: Rp 1.350.000.000 (titik sebagai separator ribuan).
+  - [x] Format penulisan tanggal menggunakan struktur: 24 Mei 2026 atau format numerik 24/05/2026.
+  - [x] Seluruh tampilan timestamp wajib menggunakan zona waktu Asia/Jakarta (WIB).
+- [x] AC-9.4 Browser Support:
+  - [x] Kompatibel dengan browser Chrome / Edge / Firefox / Safari versi rilis 2 tahun terakhir.
+  - [x] Mendukung penuh Mobile Safari iOS 14+ serta Chrome untuk platform Android.
 
 ## 10. Deliverables & Acceptance (Definition of Done)
 Fitur dinyatakan selesai sepenuhnya (DONE) apabila telah memenuhi kriteria akhir berikut:
