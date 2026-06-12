@@ -107,7 +107,7 @@ export default function PropertiPage({ properties }: PropertiPageProps) {
 
         {/* Filter Section */}
         <section className="container mx-auto px-4 relative z-20 mb-12">
-          <div className="bg-white rounded-xl shadow-md p-4 flex flex-col md:flex-row gap-4 items-end border border-gray-100 max-w-4xl">
+          <div className="bg-white rounded-xl shadow-md p-4 flex flex-col md:flex-row gap-4 items-end border border-gray-100 w-full">
             <div className="w-full md:w-1/3">
               <label className="text-xs font-semibold text-gray-500 mb-1 block uppercase tracking-wider">Kawasan</label>
               <Select value={kawasanFilter} onValueChange={setKawasanFilter}>
@@ -172,44 +172,64 @@ export default function PropertiPage({ properties }: PropertiPageProps) {
           >
             {displayProperties.map((prop) => (
               <motion.div key={prop.id} variants={fadeUp}>
-                <Link href={`/properti/${prop.slug}`} className="group block rounded-2xl overflow-hidden border border-gray-100 bg-white hover:shadow-xl transition-all duration-300 h-full">
-                  <div className="h-48 bg-prime-black relative flex items-end justify-center">
-                    <img
-                      src={prop.imageUrl || "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80"}
-                      alt={prop.name}
-                      className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
-                    />
-                    <div className="absolute top-4 left-4 flex gap-2">
-                      <span className="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full flex items-center">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5"></span>
-                        Tersedia
-                      </span>
-                      {prop.listingType === "sale" && (
-                        <span className="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-full border border-blue-200">
-                          Dijual
-                        </span>
-                      )}
-                      {prop.listingType === "rent" && (
-                        <span className="bg-purple-100 text-purple-700 text-xs font-bold px-2.5 py-1 rounded-full border border-purple-200">
-                          Disewa
-                        </span>
-                      )}
-                    </div>
+              <Link href={`/properti/${prop.slug}`} className="group block rounded-2xl overflow-hidden border border-gray-100 bg-white hover:shadow-xl transition-all duration-300 h-full">
+                <div className="h-48 bg-prime-black relative flex items-end justify-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={prop.imageUrl || "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80"}
+                    alt={prop.name}
+                    className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                  />
+                  <div className="absolute top-4 left-4 flex gap-2">
+                    <span className="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full flex items-center">
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5"></span>
+                      {prop.listingStatus === "in_stock" ? "In Stock" : "Sold Out"}
+                    </span>
                   </div>
-                  <div className="p-6">
-                    <div className="flex justify-between items-start mb-2 gap-4">
-                      <h3 className="font-bold text-xl group-hover:text-prime-gold transition-colors line-clamp-1">{prop.name}</h3>
-                      <span className="font-bold text-lg whitespace-nowrap text-prime-black bg-gray-50 px-3 py-1 rounded-lg border border-gray-100">
+                  <div className="absolute top-4 right-4">
+                    <span className="bg-white/90 backdrop-blur-md text-prime-black text-xs font-bold px-3 py-1 rounded-full border border-gray-200 capitalize shadow-sm">
+                      {prop.type}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-5">
+                  <div className="text-xs text-prime-gold font-bold mb-2 uppercase tracking-wider">{prop.kawasan ? (Array.isArray(prop.kawasan) ? prop.kawasan.join(", ") : JSON.parse(prop.kawasan as string).join(", ")) : prop.district || "Lokasi"}</div>
+                  <h4 className="text-lg font-bold text-prime-black mb-1 line-clamp-1">{prop.name}</h4>
+                  <p className="text-gray-500 text-sm mb-3 line-clamp-2">{prop.description}</p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {prop.lebar && prop.panjang && (
+                      <span className="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                        {Number(prop.lebar)}x{Number(prop.panjang)}m
+                      </span>
+                    )}
+                    {prop.tingkat && (
+                      <span className="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                        {Number(prop.tingkat)} Lt
+                      </span>
+                    )}
+                    {prop.hasCarport && (
+                      <span className="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                        Carport
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+                    <div>
+                      <div className="text-xs text-gray-500 mb-0.5">Harga mulai</div>
+                      <div className="text-prime-black font-bold">
                         Rp {Number(prop.priceRupiah || prop.price).toLocaleString("id-ID")}
-                      </span>
+                      </div>
                     </div>
-                    <p className="text-gray-500 text-sm mb-4 line-clamp-2">{prop.description}</p>
-                    <div className="flex items-center text-sm text-gray-500 bg-gray-50 p-3 rounded-xl border border-gray-100">
-                      <MapPin className="w-4 h-4 mr-2 text-prime-gold flex-shrink-0" />
-                      <span className="truncate">{prop.address}</span>
+                    <div className="text-right">
+                      <div className="text-xs text-gray-500 mb-0.5">Kondisi</div>
+                      <div className="text-sm font-semibold text-prime-gold capitalize">
+                        {prop.siap ? prop.siap.replace(/_/g, " ") : prop.unit || prop.group || "Tersedia"}
+                      </div>
                     </div>
                   </div>
-                </Link>
+                </div>
+              </Link>
               </motion.div>
             ))}
 
@@ -223,8 +243,6 @@ export default function PropertiPage({ properties }: PropertiPageProps) {
           </motion.div>
         </section>
       </main>
-
-      <Footer />
     </div>
   );
 }

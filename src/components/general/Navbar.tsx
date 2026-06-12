@@ -76,6 +76,13 @@ export default function Navbar() {
             <Button
               variant="ghost"
               className="text-sm font-medium hover:text-prime-gold"
+              onClick={() => router.push("/properti")}
+            >
+              Properti
+            </Button>
+            <Button
+              variant="ghost"
+              className="text-sm font-medium hover:text-prime-gold"
               onClick={() => router.push("/about")}
             >
               Tentang Kami
@@ -109,6 +116,13 @@ export default function Navbar() {
                     onClick={() => router.push("/")}
                   >
                     Beranda
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-base font-medium w-full py-6 rounded-xl"
+                    onClick={() => router.push("/properti")}
+                  >
+                    Properti
                   </Button>
                   <Button
                     variant="ghost"
