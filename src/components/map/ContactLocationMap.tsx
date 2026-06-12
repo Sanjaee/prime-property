@@ -8,22 +8,19 @@ declare global {
   }
 }
 
-export function PropertyLocationMap({
+export function ContactLocationMap({
   longitude,
   latitude,
-  title = "Lokasi Properti",
-  address = "Detail lokasi properti ini.",
-  className = "h-64 rounded-lg",
+  className = "h-full w-full",
 }: {
   longitude: number;
   latitude: number;
-  title?: string;
-  address?: string;
   className?: string;
 }) {
   const mapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Fungsi inisialisasi peta
     const initMap = () => {
       if (!mapRef.current || !window.google) return;
 
@@ -35,20 +32,20 @@ export function PropertyLocationMap({
       });
 
       const contentString = `
-        <div style="font-family: Arial, sans-serif; padding: 5px; max-width: 250px;">
-            <h3 style="margin: 0 0 5px 0; color: #1a73e8; font-size: 16px;">${title}</h3>
+        <div style="font-family: Arial, sans-serif; padding: 5px; max-width: 200px;">
+            <h3 style="margin: 0 0 5px 0; color: #1a73e8; font-size: 16px;">Prime Property</h3>
             <p style="margin: 0 0 10px 0; font-size: 13px; color: #5f6368;">
-                ${address}
+                Ini adalah lokasi kantor kami. Anda bisa mengunjungi kami untuk konsultasi.
             </p>
-            <button onclick="window.open('https://www.google.com/maps?q=${latitude},${longitude}', '_blank')" style="background-color: #1a73e8; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">
-                Buka di Google Maps
+            <button onclick="window.open('https://wa.me/6281112345678', '_blank')" style="background-color: #1a73e8; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                Hubungi Kami
             </button>
         </div>
       `;
 
       const infowindow = new window.google.maps.InfoWindow({
         content: contentString,
-        ariaLabel: title,
+        ariaLabel: "Prime Property",
       });
 
       const marker = new window.google.maps.Marker({
@@ -65,6 +62,7 @@ export function PropertyLocationMap({
       });
     };
 
+    // Load Google Maps script jika belum ada
     if (window.google && window.google.maps) {
       initMap();
     } else {
@@ -81,7 +79,7 @@ export function PropertyLocationMap({
         existingScript.addEventListener("load", initMap);
       }
     }
-  }, [latitude, longitude, title, address]);
+  }, [latitude, longitude]);
 
   return <div ref={mapRef} className={className} />;
 }

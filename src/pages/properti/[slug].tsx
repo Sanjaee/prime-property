@@ -566,7 +566,12 @@ export default function PropertiDetailPage({ data }: { data: PageData | null }) 
               {/* Location */}
               <section className="pt-4 border-t">
                 <h2 className="text-lg font-semibold mb-3">Lokasi Peta</h2>
-                <PropertyLocationMap longitude={lng} latitude={lat} />
+                <PropertyLocationMap 
+                  longitude={lng} 
+                  latitude={lat} 
+                  title={p.name}
+                  address={p.address}
+                />
                 <Button variant="outline" className="mt-4" asChild>
                   <a
                     href={`https://www.google.com/maps?q=${lat},${lng}`}
