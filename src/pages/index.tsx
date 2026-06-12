@@ -18,6 +18,7 @@ import { desc, eq, inArray, and, isNull } from "drizzle-orm";
 import type { InferSelectModel } from "drizzle-orm";
 import { motion } from "framer-motion";
 import { MapPin, Phone, MessageCircle, Mail, Maximize2, Minimize2 } from "lucide-react";
+import { IconLoader } from "@tabler/icons-react";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -181,7 +182,7 @@ export default function Home({ properties }: HomeProps) {
             />
           </div>
           <Button onClick={handleSearch} disabled={isSearching} className="w-full md:w-auto h-11 px-8 bg-prime-gold hover:brightness-95 text-prime-black font-semibold shadow-md">
-            {isSearching ? "Mencari..." : "Cari Properti"}
+            {isSearching ? <><IconLoader className="mr-2 h-4 w-4 animate-spin" /> Mencari...</> : "Cari Properti"}
           </Button>
         </div>
       </section>
@@ -361,7 +362,7 @@ export default function Home({ properties }: HomeProps) {
               <p className="text-gray-400 mb-8 leading-relaxed text-lg">
                 Prime Property memadukan pemahaman pasar yang mendalam dengan pelayanan personal. Kami menempatkan ketelitian data dan transparansi sebagai fondasi—agar setiap keputusan properti Anda diambil dengan tenang dan percaya diri.
               </p>
-              <img src="/logo.avif" alt="Prime Property" className="h-10 opacity-90" />
+              <img src="/logo.png" alt="Prime Property" className="h-10 opacity-90 bg-white px-3 py-2 rounded-lg shadow-sm" />
             </div>
             <div className="w-full md:w-1/2 relative z-10 flex justify-center">
               <div className="w-full max-w-sm aspect-square bg-gradient-to-tr from-prime-gold/20 to-transparent rounded-full flex items-center justify-center p-8">

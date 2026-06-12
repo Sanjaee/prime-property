@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react"
+import { IconTrendingDown, IconTrendingUp, IconLoader } from "@tabler/icons-react"
 
 import { Badge } from "@/components/ui/badge"
 import {
@@ -62,10 +62,8 @@ export function SectionCards() {
 
   if (loading || !data) {
     return (
-      <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-        {[...Array(4)].map((_, i) => (
-          <Card key={i} className="h-[140px] animate-pulse bg-muted/50" />
-        ))}
+      <div className="flex items-center justify-center h-32 w-full">
+        <IconLoader className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
   }

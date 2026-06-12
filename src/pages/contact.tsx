@@ -18,7 +18,7 @@ import Footer from "@/components/general/Footer";
 // Load map dynamically to avoid SSR issues with mapbox-gl
 const PropertyLocationMap = dynamic(
   () => import("@/components/map/PropertyLocationMap").then((m) => m.PropertyLocationMap),
-  { ssr: false, loading: () => <div className="w-full h-full bg-gray-100 animate-pulse rounded-2xl flex items-center justify-center text-gray-400">Memuat Peta...</div> }
+  { ssr: false, loading: () => <div className="w-full h-full bg-gray-100 rounded-2xl flex items-center justify-center text-gray-400"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-400"></div></div> }
 );
 
 const geistSans = Geist({

@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { MoreVertical, CheckCircle2, Clock } from "lucide-react";
-import { IconChevronLeft, IconChevronRight, IconChevronsLeft, IconChevronsRight } from "@tabler/icons-react";
+import { IconChevronLeft, IconChevronRight, IconChevronsLeft, IconChevronsRight, IconLoader } from "@tabler/icons-react";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -59,19 +59,9 @@ export function DashboardActivityTable() {
 
   if (loading) {
     return (
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle className="animate-pulse bg-muted h-6 w-48 rounded"></CardTitle>
-          <CardDescription className="animate-pulse bg-muted h-4 w-72 rounded mt-2"></CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-10 animate-pulse bg-muted rounded"></div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex items-center justify-center h-64 w-full">
+        <IconLoader className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
     );
   }
 

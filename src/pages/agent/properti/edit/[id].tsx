@@ -11,7 +11,7 @@ import { SiteHeader } from "@/components/dashboard/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { PropertiForm } from "@/components/properti/PropertiForm"
 import { PropertiFormValues } from "@/lib/validations/properti"
-import { IconArrowLeft } from "@tabler/icons-react"
+import { IconArrowLeft, IconLoader } from "@tabler/icons-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
@@ -89,7 +89,9 @@ export default function EditPropertiPage() {
               </Button>
             </div>
             {loading ? (
-              <div className="flex items-center justify-center h-48">Loading...</div>
+              <div className="flex items-center justify-center h-48 w-full">
+                <IconLoader className="h-8 w-8 animate-spin text-muted-foreground" />
+              </div>
             ) : initialData ? (
               <PropertiForm initialData={initialData} onSave={handleSave} onCancel={handleCancel} />
             ) : null}

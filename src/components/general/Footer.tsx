@@ -35,7 +35,7 @@ export default function Footer() {
       >
         <motion.div variants={fadeUp} className="md:col-span-5">
           <div className="mb-6">
-            <img src="/logo.avif" alt="Prime Property" className="h-12" />
+            <img src="/logo.png" alt="Prime Property Logo" className="h-12 w-auto object-contain bg-[#F5F5F5] px-3 py-1 rounded-lg shadow-sm" />
           </div>
           <p className="text-gray-400 leading-relaxed max-w-sm mt-6">
             Menghadirkan ruko dan villa premium di kawasan terbaik. Setiap transaksi dilayani dengan ketelitian dan kepercayaan.
