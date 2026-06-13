@@ -13,6 +13,20 @@ import LoadingBar from "react-top-loading-bar";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import Footer from "@/components/general/Footer";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 10, // 10 menit
+      gcTime: 1000 * 60 * 30, // 30 menit
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+      retry: 1,
+    },
+  },
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,7 +60,8 @@ export default function App({
   return (
     <div className={cn(geistSans.variable, geistMono.variable)}>
       <ThemeProvider attribute="class" defaultTheme="light" forcedTheme="light">
-        <SessionProvider session={session}>
+        <QueryClientProvider client={queryClient}>
+          <SessionProvider session={session}>
           <ApiProvider>
             <MapUIProvider>
               <TooltipProvider>
@@ -72,7 +87,8 @@ export default function App({
               </TooltipProvider>
             </MapUIProvider>
           </ApiProvider>
-        </SessionProvider>
+          </SessionProvider>
+        </QueryClientProvider>
       </ThemeProvider>
     </div>
   );

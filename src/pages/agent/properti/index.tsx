@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import type { GetServerSideProps } from "next"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/pages/api/auth/[...nextauth]"
 import Head from "next/head"
 import { useRouter } from "next/router"
 import { toast } from "sonner"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { AppSidebar } from "@/components/dashboard/app-sidebar"
 import { SiteHeader } from "@/components/dashboard/site-header"
@@ -19,26 +20,22 @@ interface PropertiPageProps {
 
 export default function PropertiPage({ userRole }: PropertiPageProps) {
   const router = useRouter()
-  const [data, setData] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+  const queryClient = useQueryClient()
 
-  const fetchData = async () => {
-    try {
-      setLoading(true)
+  const { data = [], isLoading: loading, isError, error } = useQuery({
+    queryKey: ["properti"],
+    queryFn: async () => {
       const res = await fetch("/api/properti")
       if (!res.ok) throw new Error("Gagal mengambil data")
-      const json = await res.json()
-      setData(json)
-    } catch (err: any) {
-      toast.error(err.message)
-    } finally {
-      setLoading(false)
+      return res.json()
     }
-  }
+  })
 
-  useEffect(() => {
-    fetchData()
-  }, [])
+  React.useEffect(() => {
+    if (isError && error) {
+      toast.error((error as Error).message)
+    }
+  }, [isError, error])
 
   const handleAdd = () => {
     router.push("/agent/properti/tambah")
@@ -60,7 +57,7 @@ export default function PropertiPage({ userRole }: PropertiPageProps) {
         throw new Error(err.error || "Gagal menghapus")
       }
       toast.success("Berhasil dihapus")
-      fetchData()
+      queryClient.invalidateQueries({ queryKey: ["properti"] })
     } catch (err: any) {
       toast.error(err.message)
     }

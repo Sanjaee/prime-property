@@ -391,11 +391,11 @@ export default function Home({ properties, totalCount }: HomeProps) {
             Tim Prime Property siap membantu Anda menemukan ruko atau villa yang sesuai kebutuhan dan anggaran.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button className="h-12 px-8 bg-prime-black hover:bg-prime-black/90 text-white font-medium text-lg rounded-full">
-              Hubungi Kami Sekarang
+            <Button asChild className="h-12 px-8 bg-prime-black hover:bg-prime-black/90 text-white font-medium text-lg rounded-full">
+              <Link href="/contact">Hubungi Kami Sekarang</Link>
             </Button>
-            <Button variant="outline" className="h-12 px-8 border-prime-black text-prime-black hover:bg-prime-gray font-medium text-lg rounded-full">
-              Lihat Properti
+            <Button variant="outline" asChild className="h-12 px-8 border-prime-black text-prime-black hover:bg-prime-gray font-medium text-lg rounded-full">
+              <Link href="/properti">Lihat Properti</Link>
             </Button>
           </div>
         </div>

@@ -35,7 +35,6 @@ import {
   type ColumnFiltersState,
   type SortingState,
   type VisibilityState,
-  FilterFn,
 } from "@tanstack/react-table"
 
 import { Badge } from "@/components/ui/badge"
@@ -483,6 +482,8 @@ export function PropertiTable({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
+  const { rows } = table.getRowModel()
+
   // Active filter chips
   const activeFilters = []
   if (filterKawasan.length > 0) activeFilters.push({ label: `Kawasan: ${filterKawasan.join(", ")}`, onRemove: () => setFilterKawasan([]) })
@@ -702,15 +703,15 @@ export function PropertiTable({
         )}
       </div>
 
-      <div className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6">
-        <div className="overflow-hidden rounded-lg border bg-card">
+      <div className="relative flex flex-col gap-4 overflow-x-auto px-4 lg:px-6 w-full">
+        <div className="overflow-hidden rounded-lg border bg-card w-full">
           <Table>
-            <TableHeader className="sticky top-0 z-10 bg-muted/50 text-foreground border-b">
+            <TableHeader className="sticky top-0 z-10 bg-muted/50 text-foreground border-b shadow-sm">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <TableHead key={header.id} colSpan={header.colSpan} className="py-2 h-10 font-semibold text-xs text-muted-foreground uppercase tracking-wider">
+                      <TableHead key={header.id} colSpan={header.colSpan} className="py-2 h-10 font-semibold text-xs text-muted-foreground uppercase tracking-wider bg-muted/50">
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -724,8 +725,8 @@ export function PropertiTable({
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
+              {rows.length ? (
+                rows.map((row) => (
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}

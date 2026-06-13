@@ -46,7 +46,7 @@ async function seed() {
       console.log("Superadmin created successfully!");
     }
 
-    console.log("Seeding 100 dummy properties in Jakarta, Malaysia, and Medan...");
+    console.log("Seeding 20,000 dummy properties in Jakarta, Malaysia, and Medan...");
     
     // Delete existing properties
     await db.delete(properti);
@@ -55,7 +55,7 @@ async function seed() {
       "https://navapark.id/site/assets/images/newsEvents/5fbca07f54a2e.jpeg"
     ];
 
-    for (let i = 0; i < 100; i++) {
+    const createProperty = async (i: number) => {
       const region = REGIONS[Math.floor(Math.random() * REGIONS.length)];
       const lat = randomInRange(region.latMin, region.latMax);
       const lng = randomInRange(region.lngMin, region.lngMax);
@@ -70,7 +70,7 @@ async function seed() {
         ownerId: superadminId,
         createdBy: superadminId,
         name: `Properti Premium ${region.name} #${i + 1}`,
-        slug: `prop-${region.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${i}-${Date.now()}`,
+        slug: `prop-${region.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${i}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
         description: `Properti eksklusif di ${region.name}. Terletak di kawasan strategis ${kawasan} dengan fasilitas terbaik.`,
         type: type,
         status: "active",
@@ -95,7 +95,6 @@ async function seed() {
         mapsLink: `https://www.google.com/maps?q=${lat},${lng}`,
       }).returning({ id: properti.id });
 
-      // Insert detail_properti
       await db.insert(detail_properti).values({
         propertiId: newProp.id,
         hasCarport: Math.random() > 0.2, // 80% chance of having carport
@@ -111,7 +110,6 @@ async function seed() {
         facingDirection: i % 2 === 0 ? "Utara" : "Selatan",
       });
 
-      // Insert image
       await db.insert(properti_images).values({
         propertiId: newProp.id,
         imageUrl: imageUrls[i % imageUrls.length],
@@ -119,18 +117,27 @@ async function seed() {
         sortOrder: 0,
       });
 
-      // Insert hadap
       await db.insert(properti_hadap).values({
         propertiId: newProp.id,
         hadap: i % 2 === 0 ? "Utara" : "Selatan",
       });
-      
-      if (i % 25 === 0) {
-        console.log(`Seeded ${i} properties...`);
+    };
+
+    const totalProperties = 20000;
+    const chunkSize = 50; // Use small chunk to avoid overwhelming connection pool
+
+    for (let i = 0; i < totalProperties; i += chunkSize) {
+      const promises = [];
+      for (let j = 0; j < chunkSize && (i + j) < totalProperties; j++) {
+        promises.push(createProperty(i + j));
+      }
+      await Promise.all(promises);
+      if ((i + chunkSize) % 1000 === 0 || (i + chunkSize) === totalProperties) {
+        console.log(`Seeded ${i + chunkSize} properties...`);
       }
     }
 
-    console.log("Seeding complete! 100 properties created.");
+    console.log(`Seeding complete! ${totalProperties} properties created.`);
     process.exit(0);
   } catch (err) {
     console.error("Seeding failed:", err);

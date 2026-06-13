@@ -56,6 +56,7 @@ export default function PropertiPage({ properties }: PropertiPageProps) {
   const [maxHargaFilter, setMaxHargaFilter] = useState("");
   const [displayProperties, setDisplayProperties] = useState(properties);
   const [isSearching, setIsSearching] = useState(false);
+  const [displayLimit, setDisplayLimit] = useState(100);
 
   useEffect(() => {
     // Basic client-side filtering on mount or when props change
@@ -83,6 +84,7 @@ export default function PropertiPage({ properties }: PropertiPageProps) {
         return match;
       });
       setDisplayProperties(filtered);
+      setDisplayLimit(100);
     } catch (e) {
       console.error(e);
     } finally {
@@ -164,13 +166,13 @@ export default function PropertiPage({ properties }: PropertiPageProps) {
         {/* Listing Grid */}
         <section className="container mx-auto px-4">
           <motion.div
-            key={displayProperties.map(p => p.id).join(",")}
+            key={displayProperties.slice(0, displayLimit).map(p => p.id).join(",")}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
             variants={staggerContainer}
             initial="hidden"
             animate="visible"
           >
-            {displayProperties.map((prop) => (
+            {displayProperties.slice(0, displayLimit).map((prop) => (
               <motion.div key={prop.id} variants={fadeUp}>
               <Link href={`/properti/${prop.slug}`} className="group block rounded-2xl overflow-hidden border border-gray-100 bg-white hover:shadow-xl transition-all duration-300 h-full">
                 <div className="h-48 bg-prime-black relative flex items-end justify-center">
@@ -238,6 +240,17 @@ export default function PropertiPage({ properties }: PropertiPageProps) {
                 <div className="text-4xl mb-4">🏠</div>
                 <h3 className="text-lg font-semibold text-prime-black mb-1">Properti Tidak Ditemukan</h3>
                 <p>Coba ubah kriteria filter pencarian Anda.</p>
+              </div>
+            )}
+
+            {displayProperties.length > displayLimit && (
+              <div className="col-span-full flex justify-center mt-8 pb-4">
+                <Button 
+                  onClick={() => setDisplayLimit(prev => prev + 100)}
+                  className="bg-prime-black hover:bg-prime-black/90 text-white px-8 h-11 rounded-full font-semibold shadow-md transition-all"
+                >
+                  Tampilkan Lainnya
+                </Button>
               </div>
             )}
           </motion.div>
