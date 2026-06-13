@@ -90,6 +90,36 @@ const formatRupiah = (value: number) => {
   }).format(value)
 }
 
+function DebouncedInput({
+  value: initialValue,
+  onChange,
+  debounce = 300,
+  ...props
+}: {
+  value: string | number
+  onChange: (value: string | number) => void
+  debounce?: number
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange" | "value">) {
+  const [value, setValue] = React.useState(initialValue)
+
+  React.useEffect(() => {
+    setValue(initialValue)
+  }, [initialValue])
+
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      onChange(value)
+    }, debounce)
+
+    return () => clearTimeout(timeout)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value])
+
+  return (
+    <Input {...props} value={value} onChange={e => setValue(e.target.value)} />
+  )
+}
+
 interface PropertiTableProps {
   data: any[]
   userRole: string
@@ -128,7 +158,6 @@ export function PropertiTable({
   const [filterSiap, setFilterSiap] = React.useState<string[]>([])
   const [filterCarport, setFilterCarport] = React.useState("all") // "all", "ya", "tidak"
 
-  const [debouncedSearch] = useDebounce(globalSearch, 300)
   const [debouncedLebarMin] = useDebounce(filterLebarMin, 300)
   const [debouncedHargaMax] = useDebounce(filterHargaMax, 300)
 
@@ -159,7 +188,7 @@ export function PropertiTable({
     if (!router.isReady) return
 
     const query: any = {}
-    if (debouncedSearch) query.search = debouncedSearch
+    if (globalSearch) query.search = globalSearch
     if (filterKawasan.length > 0) query.kawasan = filterKawasan.join(",")
     if (debouncedLebarMin) query.lebarMin = debouncedLebarMin
     if (filterHadap.length > 0) query.hadap = filterHadap.join(",")
@@ -175,7 +204,7 @@ export function PropertiTable({
     router.replace({ pathname: router.pathname, query }, undefined, { shallow: true })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    debouncedSearch,
+    globalSearch,
     filterKawasan,
     debouncedLebarMin,
     filterHadap,
@@ -196,8 +225,8 @@ export function PropertiTable({
   const filteredData = React.useMemo(() => {
     return data.filter(item => {
       // Global Search: name + group + kawasan
-      if (debouncedSearch) {
-        const query = debouncedSearch.toLowerCase()
+      if (globalSearch) {
+        const query = globalSearch.toLowerCase()
         const kawasanStr = Array.isArray(item.kawasan) ? item.kawasan.join(" ") : ""
         const combined = `${item.name} ${item.group || ""} ${kawasanStr}`.toLowerCase()
         if (!combined.includes(query)) return false
@@ -248,7 +277,7 @@ export function PropertiTable({
     })
   }, [
     data,
-    debouncedSearch,
+    globalSearch,
     filterKawasan,
     debouncedLebarMin,
     filterHadap,
@@ -520,10 +549,10 @@ export function PropertiTable({
 
       <div className="px-4 lg:px-6 flex flex-col gap-4">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full">
-          <Input
+          <DebouncedInput
             placeholder="Cari nama, group, atau kawasan..."
             value={globalSearch}
-            onChange={(e) => setGlobalSearch(e.target.value)}
+            onChange={(value) => setGlobalSearch(value as string)}
             className="w-full sm:max-w-md h-10"
           />
           <div className="flex items-center gap-2 w-full sm:w-auto sm:ml-auto">
