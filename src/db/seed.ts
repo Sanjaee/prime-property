@@ -18,6 +18,10 @@ const KAWASAN_LIST = ["Krakatau", "Pancing", "Cemara Asri", "Kuala", "Tembung", 
 const TIPE_LIST = ["house", "villa", "ruko", "apartment", "commercial"] as const;
 const SIAP_LIST = ["siap_huni", "siap_kosong", "siap_huni_renovasi"] as const;
 
+const NAMA_DEPAN = ["Griya", "Residences", "Mansion", "Oasis", "Bukit", "Taman", "Pesona", "Citra", "Graha", "Puri", "Lembah", "Grand", "Royal", "Bumi", "Permata"];
+const NAMA_TENGAH = ["Asri", "Harmoni", "Megah", "Indah", "Sejahtera", "Aman", "Sentosa", "Cemerlang", "Permata", "Mulia", "Kencana", "Bunga", "Hijau", "Nyaman", "Damai"];
+const NAMA_BELAKANG = ["Estate", "Park", "View", "Village", "City", "Plaza", "Square", "Terrace", "Townhouse", "Valley", "Hills", "Resort", "Heights", "Lakeside", "Gardens"];
+
 async function seed() {
   try {
     console.log("Seeding superadmin...");
@@ -46,7 +50,7 @@ async function seed() {
       console.log("Superadmin created successfully!");
     }
 
-    console.log("Seeding 20,000 dummy properties in Jakarta, Malaysia, and Medan...");
+    console.log("Seeding 2,000 dummy properties in Jakarta, Malaysia, and Medan...");
     
     // Delete existing properties
     await db.delete(properti);
@@ -64,12 +68,17 @@ async function seed() {
       const type = TIPE_LIST[Math.floor(Math.random() * TIPE_LIST.length)];
       const siap = SIAP_LIST[Math.floor(Math.random() * SIAP_LIST.length)];
       
+      const namaDepan = NAMA_DEPAN[Math.floor(Math.random() * NAMA_DEPAN.length)];
+      const namaTengah = NAMA_TENGAH[Math.floor(Math.random() * NAMA_TENGAH.length)];
+      const namaBelakang = NAMA_BELAKANG[Math.floor(Math.random() * NAMA_BELAKANG.length)];
+      const namaUnik = `${namaDepan} ${namaTengah} ${namaBelakang} ${kawasan} #${i + 1}`;
+
       const priceRupiah = BigInt(Math.floor(randomInRange(500, 5000)) * 1000000); // 500jt - 5M
 
       const [newProp] = await db.insert(properti).values({
         ownerId: superadminId,
         createdBy: superadminId,
-        name: `Properti Premium ${region.name} #${i + 1}`,
+        name: namaUnik,
         slug: `prop-${region.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${i}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
         description: `Properti eksklusif di ${region.name}. Terletak di kawasan strategis ${kawasan} dengan fasilitas terbaik.`,
         type: type,
@@ -123,7 +132,7 @@ async function seed() {
       });
     };
 
-    const totalProperties = 20000;
+    const totalProperties = 2000;
     const chunkSize = 50; // Use small chunk to avoid overwhelming connection pool
 
     for (let i = 0; i < totalProperties; i += chunkSize) {
