@@ -56,7 +56,7 @@ export default function PropertiPage({ properties }: PropertiPageProps) {
   const [maxHargaFilter, setMaxHargaFilter] = useState("");
   const [displayProperties, setDisplayProperties] = useState(properties);
   const [isSearching, setIsSearching] = useState(false);
-  const [displayLimit, setDisplayLimit] = useState(100);
+  const [displayLimit, setDisplayLimit] = useState(50);
 
   useEffect(() => {
     // Basic client-side filtering on mount or when props change
@@ -84,7 +84,7 @@ export default function PropertiPage({ properties }: PropertiPageProps) {
         return match;
       });
       setDisplayProperties(filtered);
-      setDisplayLimit(100);
+      setDisplayLimit(50);
     } catch (e) {
       console.error(e);
     } finally {
@@ -246,7 +246,7 @@ export default function PropertiPage({ properties }: PropertiPageProps) {
             {displayProperties.length > displayLimit && (
               <div className="col-span-full flex justify-center mt-8 pb-4">
                 <Button 
-                  onClick={() => setDisplayLimit(prev => prev + 100)}
+                  onClick={() => setDisplayLimit(prev => prev + 50)}
                   className="bg-prime-black hover:bg-prime-black/90 text-white px-8 h-11 rounded-full font-semibold shadow-md transition-all"
                 >
                   Tampilkan Lainnya
