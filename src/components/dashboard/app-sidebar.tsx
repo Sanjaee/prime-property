@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { useSession } from "next-auth/react"
 import {
   IconArchive,
@@ -76,10 +77,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
-              <a href="/" className="flex items-center justify-center w-full bg-[#F5F5F5] py-2 rounded-lg shadow-sm">
+              <Link href="/" className="flex items-center justify-center w-full bg-[#F5F5F5] py-2 rounded-lg shadow-sm">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/logo.png" alt="Prime Property Logo" className="h-10 w-auto object-contain" />
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

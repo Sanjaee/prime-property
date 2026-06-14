@@ -140,8 +140,8 @@ export default function Navbar() {
                   </Button>
 
                   {!session?.user && (
-                    <Button 
-                      onClick={() => router.push("/agent/login")} 
+                    <Button
+                      onClick={() => router.push("/agent/login")}
                       className="w-full bg-prime-gold hover:bg-[#d4af37] text-prime-black font-bold mt-6 py-6 rounded-xl text-base shadow-sm"
                     >
                       Login Agent
@@ -255,9 +255,9 @@ export default function Navbar() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button 
-              onClick={() => router.push("/agent/login")} 
-              variant="outline" 
+            <Button
+              onClick={() => router.push("/agent/login")}
+              variant="outline"
               className="hidden md:inline-flex border-prime-gold text-prime-gold hover:bg-prime-gold hover:text-prime-white"
             >
               Login Agent

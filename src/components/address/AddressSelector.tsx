@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -65,15 +66,13 @@ function AddressFieldWithSelect({
     const q = search.toLowerCase().trim();
     return options.filter((o) => o.text.toLowerCase().includes(q));
   }, [options, search]);
-  const displayed = useMemo(() => {
-    const slice = filtered.slice(0, MAX_OPTIONS_RENDER);
-    const selectedInFull = selectedId && options.find((o) => o.id === selectedId);
-    if (selectedInFull && !slice.some((o) => o.id === selectedId)) {
-      return [selectedInFull, ...slice].slice(0, MAX_OPTIONS_RENDER);
-    }
-    return slice;
-  }, [filtered, selectedId, options]);
-  const hasMore = filtered.length > MAX_OPTIONS_RENDER;
+  const parentRef = useRef<HTMLDivElement>(null);
+  const rowVirtualizer = useVirtualizer({
+    count: filtered.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 36,
+    overscan: 5,
+  });
 
   return (
     <div className="space-y-2">
@@ -113,30 +112,39 @@ function AddressFieldWithSelect({
                 className="pl-10 bg-background"
               />
             </div>
-            <div className="max-h-60 overflow-y-auto">
-              {displayed.length === 0 ? (
+            <div ref={parentRef} className="max-h-60 overflow-y-auto">
+              {filtered.length === 0 ? (
                 <p className="text-center py-4 text-muted-foreground text-sm">Tidak ada di daftar. Ketik manual di kolom input.</p>
               ) : (
-                <div className="space-y-0.5">
-                  {displayed.map((o) => (
-                    <button
-                      key={o.id}
-                      type="button"
-                      className={`w-full text-left px-3 py-2 rounded-md text-sm hover:bg-muted transition-colors ${selectedId === o.id ? "bg-muted font-medium" : ""}`}
-                      onClick={() => {
-                        onSelect(o.id, o.text);
-                        setOpen(false);
-                        setSearch("");
-                      }}
-                    >
-                      {o.text}
-                    </button>
-                  ))}
-                  {hasMore && (
-                    <p className="text-center py-2 text-xs text-muted-foreground">
-                      Tampilkan 100 dari {filtered.length}. Ketik untuk memfilter.
-                    </p>
-                  )}
+                <div 
+                  className="w-full relative"
+                  style={{ height: `${rowVirtualizer.getTotalSize()}px` }}
+                >
+                  {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                    const o = filtered[virtualRow.index];
+                    return (
+                      <div
+                        key={virtualRow.key}
+                        className="absolute top-0 left-0 w-full px-1 space-y-0.5"
+                        style={{
+                          height: `${virtualRow.size}px`,
+                          transform: `translateY(${virtualRow.start}px)`,
+                        }}
+                      >
+                        <button
+                          type="button"
+                          className={`w-full text-left px-3 py-2 rounded-md text-sm hover:bg-muted transition-colors ${selectedId === o.id ? "bg-muted font-medium" : ""}`}
+                          onClick={() => {
+                            onSelect(o.id, o.text);
+                            setOpen(false);
+                            setSearch("");
+                          }}
+                        >
+                          {o.text}
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>

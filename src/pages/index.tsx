@@ -363,7 +363,10 @@ export default function Home({ properties, totalCount }: HomeProps) {
               <p className="text-gray-400 mb-8 leading-relaxed text-lg">
                 Prime Property memadukan pemahaman pasar yang mendalam dengan pelayanan personal. Kami menempatkan ketelitian data dan transparansi sebagai fondasi—agar setiap keputusan properti Anda diambil dengan tenang dan percaya diri.
               </p>
-              <img src="/logo.png" alt="Prime Property" className="h-10 opacity-90 bg-white px-3 py-2 rounded-lg shadow-sm" />
+              <Link href="/" className="flex items-center justify-center w-full bg-[#F5F5F5] py-2 rounded-lg shadow-sm">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/logo.png" alt="Prime Property Logo" className="h-10 w-auto object-contain" />
+              </Link>
             </div>
             <div className="w-full md:w-1/2 relative z-10 flex justify-center">
               <div className="w-full max-w-sm aspect-square bg-gradient-to-tr from-prime-gold/20 to-transparent rounded-full flex items-center justify-center p-8">

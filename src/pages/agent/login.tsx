@@ -5,6 +5,7 @@ import { LoginForm } from "@/components/auth/LoginForm";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -67,7 +68,10 @@ const LoginPage = () => {
       <div className="hidden lg:flex flex-col justify-between p-12 bg-[#0F0F0F] text-white">
         <div>
           <div className="flex items-center gap-2 mb-16">
-            <img src="/logo.png" alt="Prime Property Logo" className="h-12 w-auto" />
+            <Link href="/" className="flex items-center justify-center w-full bg-[#F5F5F5] py-2 rounded-lg shadow-sm">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo.png" alt="Prime Property Logo" className="h-10 w-auto object-contain" />
+            </Link>
           </div>
           
           <div className="inline-flex items-center rounded-full border border-[#C9A961]/30 bg-[#C9A961]/10 px-2.5 py-0.5 text-xs font-semibold text-[#C9A961] transition-colors mb-6">

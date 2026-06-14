@@ -125,17 +125,17 @@ export const SelectDialog: React.FC<SelectDialogProps> = ({
                         "w-full text-left px-3 py-2 rounded-md text-sm transition-colors hover:bg-accent hover:text-accent-foreground flex items-center justify-between",
                         (selectedValue?.toString() === option.id?.toString() ||
                           selectedValue?.toString() ===
-                            option.code?.toString()) &&
-                          "bg-accent text-accent-foreground"
+                          option.code?.toString()) &&
+                        "bg-accent text-accent-foreground"
                       )}
                       onClick={() => handleSelect(option)}
                     >
                       <span className="truncate">{option.name}</span>
                       {(selectedValue?.toString() === option.id?.toString() ||
                         selectedValue?.toString() ===
-                          option.code?.toString()) && (
-                        <Check className="h-4 w-4" />
-                      )}
+                        option.code?.toString()) && (
+                          <Check className="h-4 w-4" />
+                        )}
                     </button>
                   ))}
                 </div>
