@@ -75,7 +75,9 @@ export default function Home({ properties, totalCount }: HomeProps) {
           }
           if (maxHargaFilter && Number(maxHargaFilter) > 0) {
             const price = Number(p.priceRupiah || p.price);
-            if (price > Number(maxHargaFilter)) match = false;
+            // Tambahkan toleransi sekitar 12.5% agar mendekati nilai yang diinput
+            const fuzzyMax = Number(maxHargaFilter) * 1.125;
+            if (price > fuzzyMax) match = false;
           }
           return match;
         });

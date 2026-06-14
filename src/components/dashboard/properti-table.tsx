@@ -253,7 +253,8 @@ export function PropertiTable({
 
       // Harga Max
       if (debouncedHargaMax) {
-        if (Number(item.price) > Number(debouncedHargaMax)) return false
+        const fuzzyMax = Number(debouncedHargaMax) * 1.125;
+        if (Number(item.price) > fuzzyMax) return false
       }
 
       // Tipe
