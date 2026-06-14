@@ -68,7 +68,7 @@ const LoginPage = () => {
       <div className="hidden lg:flex flex-col justify-between p-12 bg-[#0F0F0F] text-white">
         <div>
           <div className="flex items-center gap-2 mb-16">
-            <Link href="/" className="flex items-center justify-center w-full bg-[#F5F5F5] py-2 rounded-lg shadow-sm">
+            <Link href="/" className="inline-flex items-center justify-center w-fit bg-[#F5F5F5] py-2 px-4 rounded-lg shadow-sm">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/logo.png" alt="Prime Property Logo" className="h-10 w-auto object-contain" />
             </Link>

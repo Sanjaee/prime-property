@@ -35,7 +35,7 @@ export default function Footer() {
       >
         <motion.div variants={fadeUp} className="md:col-span-5">
           <div className="mb-6">
-            <Link href="/" className="flex items-center justify-center w-full bg-[#F5F5F5] py-2 rounded-lg shadow-sm">
+            <Link href="/" className="inline-flex items-center justify-center w-fit bg-[#F5F5F5] py-2 px-4 rounded-lg shadow-sm">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/logo.png" alt="Prime Property Logo" className="h-10 w-auto object-contain" />
             </Link>
