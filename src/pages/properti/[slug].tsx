@@ -231,19 +231,19 @@ export default function PropertiDetailPage({ data }: { data: PageData | null }) 
         <div className="container max-w-6xl mx-auto px-4 py-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main content */}
-            <div className="lg:col-span-2 space-y-6 mt-20">
+            <div className="lg:col-span-2 space-y-6 mt-4 md:mt-24">
               <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem>
+                <BreadcrumbList className="flex-nowrap truncate">
+                  <BreadcrumbItem className="whitespace-nowrap">
                     <BreadcrumbLink href="/">Beranda</BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
-                  <BreadcrumbItem>
+                  <BreadcrumbItem className="whitespace-nowrap">
                     <BreadcrumbLink href="/properti">Properti</BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>{p.name}</BreadcrumbPage>
+                  <BreadcrumbItem className="truncate min-w-0">
+                    <BreadcrumbPage className="truncate">{p.name}</BreadcrumbPage>
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>
