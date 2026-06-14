@@ -1,6 +1,20 @@
 # PRIME PROPERTY - ACCEPTANCE CRITERIA
 Web Platform & Internal Agent Portal
 
+## 🚀 Quick Start & Demo
+Aplikasi ini sudah dilengkapi dengan script untuk men-generate **2.000 data dummy** secara otomatis. Untuk mencoba dan mengisi database, silakan jalankan:
+```bash
+npm run seed
+# atau jalankan script langsung: npx tsx src/db/seed.ts
+```
+
+**Akses Login Agent (Superadmin):**
+- **URL Login:** `/agent/login`
+- **Email:** `superadmin@example.com`
+- **Password:** `superadmin123`
+
+---
+
 ## 1. Branding & Design System
 - [x] AC-1.1 Color Palette: Menggunakan palet warna konsisten sesuai logo Prime Property:
   - [x] #1A1A1A (Primary Black) untuk Header dan teks utama.
