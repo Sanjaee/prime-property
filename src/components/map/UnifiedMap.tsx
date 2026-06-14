@@ -322,12 +322,7 @@ export function UnifiedMap({ theme }: { theme?: "light" | "dark" } = {}) {
             } catch {
               /* ignore */
             }
-            toast({
-              title: "Lokasi tidak diizinkan",
-              description:
-                "Peta memakai tampilan default. Gunakan tombol lokasi di pojok peta jika ingin mencoba lagi.",
-              variant: "destructive",
-            });
+
           }
         },
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }

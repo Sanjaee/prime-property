@@ -233,11 +233,6 @@ export function AddressSelector({ value, onChange }: AddressSelectorProps) {
 
   const getCurrentLocation = useCallback(() => {
     if (!navigator.geolocation) {
-      toast({
-        title: "Geolocation tidak didukung",
-        description: "Browser tidak mendukung fitur lokasi.",
-        variant: "destructive",
-      });
       return;
     }
 

@@ -84,7 +84,11 @@ export default function Home({ properties, totalCount }: HomeProps) {
         setDisplayProperties(filtered.slice(0, 6));
         
         // Scroll to the property section
-        document.getElementById("koleksi-pilihan")?.scrollIntoView({ behavior: "smooth" });
+        const section = document.getElementById("properti-unggulan");
+        if (section) {
+          const y = section.getBoundingClientRect().top + window.scrollY - 80;
+          window.scrollTo({ top: y, behavior: "smooth" });
+        }
       }
     } catch (e) {
       console.error(e);
@@ -232,6 +236,7 @@ export default function Home({ properties, totalCount }: HomeProps) {
         </div>
 
         <motion.div
+          id="properti-unggulan"
           key={displayProperties.map(p => p.id).join(",")}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           variants={staggerContainer}
