@@ -821,16 +821,6 @@ function MapControls({
       },
       (error: GeolocationPositionError) => {
         setWaitingForLocation(false);
-        const messages: Record<number, string> = {
-          1: "Akses lokasi ditolak. Izinkan akses lokasi di pengaturan browser.",
-          2: "Lokasi tidak tersedia. Pastikan GPS atau layanan lokasi aktif.",
-          3: "Timeout mendapatkan lokasi. Coba lagi.",
-        };
-        toast({
-          title: "Gagal mendapatkan lokasi",
-          description: messages[error.code] ?? "Terjadi kesalahan saat mendapatkan lokasi.",
-          variant: "destructive",
-        });
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );

@@ -262,11 +262,6 @@ export function AddressSelector({ value, onChange }: AddressSelectorProps) {
       },
       (error) => {
         console.error("Error getting location:", error);
-        toast({
-          title: "Gagal mendapatkan lokasi",
-          description: "Pastikan GPS aktif dan izin lokasi diberikan.",
-          variant: "destructive",
-        });
         setIsLoadingLocation(false);
       },
       {
