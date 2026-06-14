@@ -387,7 +387,7 @@ export function UnifiedMap({ theme }: { theme?: "light" | "dark" } = {}) {
               clusterRadius={50}
               clusterMaxZoom={14}
               clusterColors={["#1d8cf8", "#6d5dfc", "#e23670"]}
-              pointColor="#18181b"
+              pointColor="#C9A961"
               onPointClick={(feature) => {
                 if (feature.properties) setSelectedProperty(feature.properties);
               }}

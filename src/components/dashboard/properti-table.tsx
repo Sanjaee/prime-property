@@ -144,7 +144,7 @@ export function PropertiTable({
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 50,
+    pageSize: 25,
   })
 
   // Advanced Filters State
@@ -199,7 +199,7 @@ export function PropertiTable({
     if (filterCarport !== "all") query.carport = filterCarport
     
     if (pagination.pageIndex !== 0) query.pageIndex = pagination.pageIndex
-    if (pagination.pageSize !== 50) query.pageSize = pagination.pageSize
+    if (pagination.pageSize !== 25) query.pageSize = pagination.pageSize
 
     router.replace({ pathname: router.pathname, query }, undefined, { shallow: true })
   // eslint-disable-next-line react-hooks/exhaustive-deps

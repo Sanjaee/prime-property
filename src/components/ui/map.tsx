@@ -1308,7 +1308,7 @@ function MapClusterLayer<
       filter: ["!", ["has", "point_count"]],
       paint: {
         "circle-color": pointColor,
-        "circle-radius": 5,
+        "circle-radius": 8,
         "circle-stroke-width": 2,
         "circle-stroke-color": "#fff",
       },
